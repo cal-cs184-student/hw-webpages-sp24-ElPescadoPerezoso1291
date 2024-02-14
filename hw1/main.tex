@@ -1,0 +1,216 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage{subfig}
+\usepackage{float}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\title{CS184 Project 1}
+\author{Michael Huang}
+\date{February 2024}
+
+\begin{document}
+
+\maketitle
+
+\section{Drawing Single-Color Triangles}
+Consider a triangle $t$ living in a continous plane. We can rasterize the triangle in the image plane by doing:
+$$f(x, y) = \begin{cases} 
+      1 & inside(t, x, y) \\
+      0 & o.w \\
+   \end{cases}$$
+We can consider world coordinates similar to the pixel coordinates. The only difference is that world coordinates are continuous, while pixel coordinates are discrete. Thus, consider discrete pixel coordinates $(i, j)$. To make it more accurate to world coordinates, we consider the center of the pixel, so to convert it to world coordinates, we do $(i + 0.5, j + 0.5)$. We would like to test if this world coordinates is inside the triangle for rasterization, so we proceed with the following test.
+\subsection{The Three Line Test}
+A triangle can be represented as three vertices $(p_1, p_2, p_3)$, with line segments connecting them. To test if a point $p$ is inside a triangle, we need to figure out if the point $p$ is on one side of the line segment or the other. To do this, we turn toward geometry.
+\\
+\\
+Let $p = (i + 0.5, j + 0.5)$ be the point we would like to test, and let $p_{test} = p_1 - p_0$ be the line segment we would like to inspect, with $p_0$ as its origin. First, we determine the orthogonal vector to $p_{test}$, denoted $p_{\perp}$. Recall the orthogonal line will simply have a dot product of zero, so $p_{\perp} = (-y_{test}, x_{test}) = (-(y_1 - y_0), x_1 - x_0)$. 
+\begin{center}
+ \includegraphics[]{Task 1/orthogonal.png}   
+\end{center}
+Now, we can use the orthogonal vector to determine if the point is on one side of the segment or the other. First, we must change the origin of $p$, so our point vector is $p - p_0$. Next, we can take the dot product with our orthogonal vector and our test vector. This is so we can determine the angle between the orthogonal vector and the test vector, since $<u, v> = ||u||_2||v||_2cos\theta$. if $(p - p_0)^Tp_{\perp} \geq 0$, then the angle $\theta \in [0, \pi]$, meaning it is above the line segment. Otherwise, it's below. For our purposes, if we consider the point to be above all three line segments, then it is inside the triangle. However, it may also be the case that being \textit{below} the line segment may also be inside the triangle. Thus, one must consider both the clockwise and counterclockwise orientation of the triangle when doing the three line test.
+\begin{center}
+ \includegraphics[]{Task 1/dotprod.png}   
+\end{center}
+\subsection{Algorithm}
+The algorithm is now simple. For every pixel inside the bounding box of the triangle (which is simply the minimum and maximum values of the vertices of the triangle), we test if the pixel in world coordinates is inside the triangle, if it is, we color the pixel the desired color, and otherwise, we leave it alone. As per the specifications, this is no worse than checking each sample within the bounding box of the triangle. The pseudocode is thus simple:
+\begin{verbatim}
+function rasterize(triangle t, color c):
+    for (x, y) in bounding box of triangle:
+        if (x + 0.5, y + 0.5) inside triangle:
+            fill_pixel(x, y, x)
+\end{verbatim}
+\newpage
+\subsection{Outputs}
+Here is the output for test4.svg. I focus in on the vertiex of the triangle, because that one is the most susceptible to aliasing:
+\begin{center}
+    \includegraphics[]{Task 1/output.png}
+\end{center}
+We can see at the vertex that there is clear aliasing, and are many obvious jaggies. This is a sign that we are sampling from a very high frequency at this point, and must sample from a lower frequency to get a less aliased image.
+\section{Antialiasing by Supersampling}
+As before, we can see that there is aliasing in the triangles, meaning that the signal is too high frequency to sample from. Thus, to alleviate this, we can do supersampling, a technique that approximates the box filter and allows us to filter out higher level frequencies and collect lower level frequencies. This alleviates some of the jaggies we had earlier.
+\subsection{Supersampling Algorithm}
+\begin{center}
+    \includegraphics[]{Task 2/supersampling.png}
+\end{center}
+The idea with supersampling is that you sample \textit{more}, then with that higher resolution sample, we blur it down to our desired resolution. The higher resolution sample collects higher frequencies, and the blur filters them out, effectively working as a low pass filter. Let $K$ be the number of sample per pixel, and let $(i, j)$ be our desired pixel we would like to color. In this pixel, we will test whether $K$ points are inside the triangle or not, then average it. i.e, for indices $(a, b)$ inside the pixel, we test $x = i + \frac{2a + 1}{2\sqrt{K}}, y = j + \frac{2b + 1}{2\sqrt{K}}$ is inside the triangle, for all $(i, j)$.
+\subsection{Results}
+\begin{center}
+    \includegraphics[]{Task 2/1.png}
+
+    \includegraphics[]{Task 2/4.png}
+
+
+    \includegraphics[]{Task 2/16.png}
+\end{center}
+We can see that as we increase the number of samples per pixel, the triangle vertex becomes more and more prominent. This is because we are allowed to take more samples at a high frequency area, thus, prevent aliasing. We can see aliasing occurring with 1 sample per pixel, as this is aliased to be a separated part of the triangle. However, with taking more samples, then averaging, we are able to get a better defined version of the triangle vertex.
+\section{Transforms}
+Here, I had cubeman do the splits! To do this, I rotated the entire right leg by 90 degrees, and rotated the entire left leg by -90 degrees. This was the result:
+\begin{center}
+    \includegraphics[]{task 3/image.png}
+\end{center}
+\section{Barycentric Coordinates}
+For a triangle with vertices $A, B, C$, and a reference point $\vec{p}$, with $\vec{p}$, we can describe the relative positioning of $\vec{p}$ as a convex combination of the vertices:
+$$
+\vec{p} = \alpha A + \beta B + \gamma C
+$$
+$$
+\alpha + \beta + \gamma = 1
+$$
+More intuitively, if we split the triangle into 3 separate triangles, then $(\alpha, \beta, \gamma)$ is the relative ratio of the area of these three triangles. One can solve for $\alpha, \beta, \gamma$ by solving the following set of linear equations.
+$$x_p = \alpha x_1 + \beta x_2 + \gamma x_3$$
+$$y_p = \alpha y_1 + \beta y_2 + \gamma y_3$$
+$$1 = \alpha + \beta + \gamma$$
+In matrix vector form, this is:
+$$
+\begin{bmatrix}
+x_1 & x_2 & x_3 \\
+y_1 & y_2 & y_3 \\
+1 & 1 & 1
+\end{bmatrix}
+\begin{bmatrix}
+\alpha \\
+\beta \\
+\gamma \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+x_p \\
+y_p \\
+1
+\end{bmatrix}
+$$
+This is best described with a colored triangle. As we move $(x, y)$, parts of the triangle, relative to distance, will become more of a different color:
+\begin{center}
+    \includegraphics[]{task 4/triangle.png}
+\end{center}
+Below is the result of test7.svg using barycentric coordinates.
+\begin{center}
+    \includegraphics[]{task 4/circle.png}
+\end{center}
+\section{"Pixel Sampling" for Texture Mapping}
+\subsection{Texture Sampling}
+In pixel sampling, we have two domains, the "screen space" and the "texture space." These are related to eachother by their corresponding triangles. For example, if we have triangle $(A, B, C)$ in screen space, then there's a triangle $(A', B', C')$ that maps the texture on the texture map. However, these triangles need not have the exact same coordinates, nor the exact same orientation. They are simply mappings that relate from screen space to texture space. 
+\\
+\\
+Recall that we defined the barycentric coordinates in part 4. We can use the barycentric coordinates to define the relative positioning of the correspondence triangle from screen space to texture space. Let $(x, y)$ be a screen space coordinate inside a triangle, and let $(u, v)$ be its cooresponidng texture space coordinate. With barycentric coordinates, we can describe $(x, y)$ as:
+$$(x, y) = \alpha A + \beta B + \gamma C$$
+With said relative positioning, we can describe texture space coordinates as:
+$$(u, v) = \alpha A' + \beta B' + \gamma C'$$
+Thus, we can sample from screen space, and use that sample to sample from texture space. 
+\\
+\\
+Since our samples are continuous, they do not need to relate exactly to integer coordinates. Thus, when we sample a $(u, v)$ texture coordinate, we need to map it back to an actual pixel in texture space.
+\subsection{Nearest Neighbor Sampling}
+Nearest neighbor sampling simply gets the nearest pixel coordinate to our sample $(u, v)$. In other words, we just round our pixel coordinate $(u * height, v * width)$ to the nearest integer. 
+\subsection{Bilinear Sampling}
+Bilinear sampling takes a more continious approach. Let $(u, v)$ be our texture coordinate, and let $u_{00}, u_{10}, u_{01}, u_{11}$ be its 4 nearest pixel neighbors. Bilinear sampling, similar to barycentric coordinates, will use a weighted average of the 4 neighbors, weighted by its distance from the neighbor.  
+\begin{center}
+    \includegraphics[]{task 5/bilinear.png}
+\end{center}
+As above, let $s$ and $t$ be the distance from relative texture coordinate $u_{00}$. Then our weighting scheme, and our final color, is:
+$$C = (1 - s)(1 - t)u_{00} + s(1 - t)u_{10} + (1 - s)t u_{01} + stu_{11}$$
+\subsection{Results}
+Below, I run results on both Nearest Neighbor Sampling and Bilinear sampling and compare their results below:
+\begin{figure}[H]
+    \centering
+    \subfloat[Nearest Neighbor Sampling]{
+        \label{ref_label1}
+        \includegraphics[scale=10]{task 5/NN1.png}
+    }
+    \subfloat[Bilinear Sampling]{
+        \label{ref_label2}
+        \includegraphics[scale=10]{task 5/B1.png}
+    }
+    \caption{Supersampling With 1 Pixel}
+    \label{ref_label_overall}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \subfloat[Nearest Neighbor Sampling]{
+        \label{ref_label1}
+        \includegraphics[scale=10]{task 5/NN16.png}
+    }
+    \subfloat[Bilinear Sampling]{
+        \label{ref_label2}
+        \includegraphics[scale=10]{task 5/B16.png}
+    }
+    \caption{Supersampling With 16 Pixels}
+    \label{ref_label_overall}
+\end{figure}
+Here, I argue that Bilinear Sampling defeats Nearest Neighbor Sampling. In the pixel inspector, we can see that many times Nearest Neighbor Sampling will end up using white pixels, causing very sharp edges and high frequencies. However, for Bilinear Sampling, we get a much smoother cutoff, as one can see in Figure 1 and Figure 2. 
+\\
+\\
+We can see large differences when sampling at different frequencies. When sampling a small number of points per pixel, (i.e 1 sample per pixel), this will cause large differences, since nearest neighbor will end up creating high frequency outputs (i.e 1 to 0 instantly). However, with bilinear sampling, this will create a smoother cutoff, rather than the sharp cutoff seen in nearest neighbor, which one can see in figure 1. When sampling at a higher frequency (i.e 16 samples per pixel), the difference will be less obvious, but still be there. This is because when supersampling, we will filter out the high frequency signals created by nearest neighbor, creating a smoother cutoff than before, similar to bilinear sampling. 
+\section{"Level Sampling" With Mipmaps for Texture Mapping}
+Recall that we have a texture map for our texture sampling. However, at different distances of the image, there can be aliasing due to the high frequency change from far away. If we simply filter out the high frequencies, this may cause blurring at parts of the image that are close (i.e low frequency signals). Thus, we use mipmaps, which is stored resolutions of the texture map. If the texture is far and is of high frequency, we use a higher level (lower resolution) mipmap, and if it's closer with lower level frequencies, we use a lower level (high resolution) mipmap. To determine the mipmap level, we simply consider the change across neighboring pixels. 
+\\
+\\
+To implement this, let $(u, v)$ be the texel we are consdering of sampling. For low frequency signals, the pixel should not be changing that much, so we want a lower level, and for higher frequency signals, the pixel should be changing a lot, so we want a higher level. Let the difference in neighboring pixels be denoted $(\frac{du}{dx}, \frac{du}{dy})$ and $(\frac{dv}{dx}, \frac{dv}{dy})$ (these are not \textit{actual} derivatives, but simply the difference between the considered texel $(u, v)$ and it's right and up neighbors). We thus determine level as:
+$$L = \log_{2}D$$
+$$D = \max (||\nabla_u||_2, ||\nabla_v||_2)$$
+Here, $L$ should be clamped to it's minimum and maximum level of stored mipmap. A $\log_2$ is used since the resolution of each mipmap is divided by 2, and the maximum was just here as a design choice.
+\\
+\\
+Many times though, $L$ is a float, which should not be ignored. Thus, it also makes sense to use a bilinear combination of mipmaps, i.e, get the color as:
+$$\alpha = L - \floor*{L}$$
+$$C = (1 - \alpha)sample(\floor*{L}) + \alpha sample(\ceil*{L})$$
+Now, for screen space point $(x, y)$, calculate it's texel coordinate $(u, v)$ using barycentric coordinates, then similarly get its texel neighbors by doing the same thing with $(x + 1, y)$ and $(x, y + 1)$. Calculate its discrete derivatives, and calculate the clamped mipmap level $L$, and use that mipmap level to sample the texel. 
+\subsection{Tradeoffs: Speed, Memory, and Antialiasing}
+\textbf{Pixel Sampling}: In pixel sampling, we used two techniques: Nearest Neighbor and Bilinear sampling, which do have its payoffs. With Nearest Neighbor, we get much better speed, as this is simply just two rounding operations, which is simpling cutting off a float. Compared to Bilinear Sampling which has much more floating point operations, Nearest Neighbor wins in the speed category. However, Bilinear sampling defeats nearest neighbors when it comes to antialiasing, as we get much smoother textures, whereas nearest neighbor will generate jagged artifacts. Their memory usage is almost identical.
+\\
+\\
+\textbf{Level Sampling: } For level sampling, we can either do $L = 0$, use the nearest $L$, or a bilinear combination of $L$. $L = 0$ is the simplest approach, having the highest speed with less FLOPs and less memory accesses, but is susceptiple to the issue of aliasing at high frequency locations (i.e far away spots). Using the nearest $L$ is better with aliasing, but has less speed due to more memory accesses and FLOPs. With bilinear $L$, this helps with aliasing even more, but must sample textures twice as much and has more FLOPs, sacrificing speed even more. The memory usage across all of these is almost identical.
+\\
+\\
+\textbf{Number of Samples Per Pixel: } Increasing the number of samples per pixel will always help with aliasing, but has huge consequences for speed and memory, as we must store each of these samples in a sample buffer, as well as sample much more.
+\subsection{Custom Results}
+\begin{figure}[H]
+    \centering
+    \subfloat[Nearest Neighbor Sampling]{
+        \label{ref_label1}
+        \includegraphics[]{task 6/NNL0.png}
+    }
+    \subfloat[Bilinear Sampling]{
+        \label{ref_label2}
+        \includegraphics[]{task 6/BL0.png}
+    }
+    \caption{Level 0 Sampling}
+    \label{ref_label_overall}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \subfloat[Nearest Neighbor Sampling]{
+        \label{ref_label1}
+        \includegraphics[]{task 6/NNNL.png}
+    }
+    \subfloat[Bilinear Sampling]{
+        \label{ref_label2}
+        \includegraphics[]{task 6/BNL.png}
+    }
+    \caption{Nearest Level Sampling}
+    \label{ref_label_overall}
+\end{figure}
+We can see that in level 0 sampling, the whiskers are more prominent than the nearest neighbor. This is even more prominent when we do nearest level. We can see that the whiskers are much more smoother and continuous than the nearest neighbor sampling, due to the high frequencies from nearest neighbor sampling. 
+\end{document}

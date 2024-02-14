@@ -1,0 +1,799 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=latex 2023.2.27)  12 FEB 2024 22:38
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**\makeatletter\def\HCode{\futurelet\HCode\HChar}\def\HChar{\ifx\HCode\def\HCod
+e##1{\Link##1}\expandafter\HCode\else\expandafter\Link\fi}\def\Link#1.a.b.c.{\g
+@addto@macro\@documentclasshook{\RequirePackage[#1,html]{tex4ht}}\let\HCode\doc
+umentstyle\def\documentstyle{\let\documentstyle\HCode\expandafter\def\csname te
+x4ht\endcsname{#1,html}\def\HCode####1{\documentstyle[tex4ht,}\@ifnextchar[{\HC
+ode}{\documentstyle[tex4ht]}}}\makeatother\HCode .a.b.c.\input  main.tex
+ (./main.tex
+(c:/texlive/2022/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2022/07/02 v1.4n Standard LaTeX document class
+(c:/texlive/2022/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2022/07/02 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count185
+\c@section=\count186
+\c@subsection=\count187
+\c@subsubsection=\count188
+\c@paragraph=\count189
+\c@subparagraph=\count190
+\c@figure=\count191
+\c@table=\count192
+\abovecaptionskip=\skip48
+\belowcaptionskip=\skip49
+\bibindent=\dimen140
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/tex4ht.sty
+version 2023-02-03-14:48
+Package: tex4ht 
+--------------------------------------
+--- Note --- for _ at preamble, use the command line option `early_'
+--------------------------------------
+--------------------------------------
+--- Note --- for ^ at preamble, use the command line option `early^'
+--------------------------------------
+\tmp:toks=\toks16
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/usepackage.4ht
+version 2023-01-12-14:08
+)
+(c:/texlive/2022/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+
+(c:/texlive/2022/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks17
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/graphics-hooks.4ht
+version 2022-08-17-14:25
+)
+(c:/texlive/2022/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
+
+(c:/texlive/2022/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
+)
+(c:/texlive/2022/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: dvips.def on input line 107.
+
+(c:/texlive/2022/texmf-dist/tex/latex/graphics-def/dvips.def
+File: dvips.def 2022/09/22 v3.1e Graphics/color driver for dvips
+))
+\Gin@req@height=\dimen141
+\Gin@req@width=\dimen142
+)
+(c:/texlive/2022/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2022/04/08 v2.17n AMS math features
+\@mathmargin=\skip50
+
+For additional information on amsmath, use the `?' option.
+(c:/texlive/2022/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2021/08/26 v2.01 AMS text
+
+(c:/texlive/2022/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks18
+\ex@=\dimen143
+))
+(c:/texlive/2022/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen144
+)
+(c:/texlive/2022/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2022/04/08 v2.04 operator names
+)
+\inf@bad=\count193
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count194
+\leftroot@=\count195
+LaTeX Info: Redefining \overline on input line 399.
+LaTeX Info: Redefining \colon on input line 410.
+\classnum@=\count196
+\DOTSCASE@=\count197
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box51
+\strutbox@=\box52
+LaTeX Info: Redefining \big on input line 722.
+LaTeX Info: Redefining \Big on input line 723.
+LaTeX Info: Redefining \bigg on input line 724.
+LaTeX Info: Redefining \Bigg on input line 725.
+\big@size=\dimen145
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count198
+LaTeX Info: Redefining \bmod on input line 905.
+LaTeX Info: Redefining \pmod on input line 910.
+LaTeX Info: Redefining \smash on input line 940.
+LaTeX Info: Redefining \relbar on input line 970.
+LaTeX Info: Redefining \Relbar on input line 971.
+\c@MaxMatrixCols=\count199
+\dotsspace@=\muskip16
+\c@parentequation=\count266
+\dspbrk@lvl=\count267
+\tag@help=\toks19
+\row@=\count268
+\column@=\count269
+\maxfields@=\count270
+\andhelp@=\toks20
+\eqnshift@=\dimen146
+\alignsep@=\dimen147
+\tagshift@=\dimen148
+\tagwidth@=\dimen149
+\totwidth@=\dimen150
+\lineht@=\dimen151
+\@envbody=\toks21
+\multlinegap=\skip51
+\multlinetaggap=\skip52
+\mathdisplay@stack=\toks22
+LaTeX Info: Redefining \[ on input line 2953.
+LaTeX Info: Redefining \] on input line 2954.
+)
+(c:/texlive/2022/texmf-dist/tex/latex/subfig/subfig.sty
+Package: subfig 2005/06/28 ver: 1.3 subfig package
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/caption-hooks.4ht
+version 2022-11-20-07:09
+)
+(c:/texlive/2022/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2022/03/01 v3.6b Customizing captions (AR)
+
+(c:/texlive/2022/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2022/03/17 v2.3b caption3 kernel (AR)
+\caption@tempdima=\dimen152
+\captionmargin=\dimen153
+\caption@leftmargin=\dimen154
+\caption@rightmargin=\dimen155
+\caption@width=\dimen156
+\caption@indent=\dimen157
+\caption@parindent=\dimen158
+\caption@hangindent=\dimen159
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count271
+\c@continuedfloat=\count272
+)
+\c@KVtest=\count273
+\sf@farskip=\skip53
+\sf@captopadj=\dimen160
+\sf@capskip=\skip54
+\sf@nearskip=\skip55
+\c@subfigure=\count274
+\c@subfigure@save=\count275
+\c@lofdepth=\count276
+\c@subtable=\count277
+\c@subtable@save=\count278
+\c@lotdepth=\count279
+\sf@top=\skip56
+\sf@bottom=\skip57
+)
+(c:/texlive/2022/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count280
+\float@exts=\toks23
+\float@box=\box53
+\@float@everytoks=\toks24
+\@floatcapt=\box54
+)
+(c:/texlive/2022/texmf-dist/tex/latex/mathtools/mathtools.sty
+Package: mathtools 2022/06/29 v1.29 mathematical typesetting tools
+
+(c:/texlive/2022/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count281
+\calc@Bcount=\count282
+\calc@Adimen=\dimen161
+\calc@Bdimen=\dimen162
+\calc@Askip=\skip58
+\calc@Bskip=\skip59
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count283
+\calc@Cskip=\skip60
+)
+(c:/texlive/2022/texmf-dist/tex/latex/mathtools/mhsetup.sty
+Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
+)
+\g_MT_multlinerow_int=\count284
+\l_MT_multwidth_dim=\dimen163
+\origjot=\skip61
+\l_MT_shortvdotswithinadjustabove_dim=\dimen164
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen165
+\l_MT_above_intertext_sep=\dimen166
+\l_MT_below_intertext_sep=\dimen167
+\l_MT_above_shortintertext_sep=\dimen168
+\l_MT_below_shortintertext_sep=\dimen169
+\xmathstrut@box=\box55
+\xmathstrut@dim=\dimen170
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/tex4ht.4ht
+version 2022-07-05-14:37
+--------------------------------------
+--- Note --- for additional information, use the command line option `info'
+--------------------------------------
+
+::::::::::::::::::::::::::::::::::::::::::
+ TeX4ht info is available in the log file 
+::::::::::::::::::::::::::::::::::::::::::
+) (c:/texlive/2022/texmf-dist/tex/generic/tex4ht/tex4ht.sty
+version 2023-02-03-14:48
+
+l.864 --- TeX4ht warning --- nonprimitive \everypar ---
+--- needs --- tex4ht main ---
+\tmp:cnt=\count285
+\openout15 = `main.tmp'.
+
+(./main.tmp)
+\tmp:dim=\skip62
+--------------------------------------
+--- Note --- for XML code, use the command line option `xml' or `xhtml'
+--------------------------------------
+ (./main.xref)
+\:refout=\write3
+\openout3 = `main.xref'.
+
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+--------------------------------------
+--- Note --- to remove the <?xml version=...?> processing instruction use the c
+ommand line option `no-VERSION'
+--------------------------------------
+--------------------------------------
+--- Note --- to remove the DOCTYPE declaration use the command line option `no-
+DOCTYPE'
+--------------------------------------
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+)
+--------------------------------------
+--- Note --- for marking of the base font, use the command line option `fonts+'
+
+--------------------------------------
+--------------------------------------
+--- Note --- for non active _, use the command line option `no_'
+--------------------------------------
+--------------------------------------
+--- Note --- for _ of catcode 13, use the command line option `_13'
+--------------------------------------
+--------------------------------------
+--- Note --- for non active ^, use the command line option `no^'
+--------------------------------------
+--------------------------------------
+--- Note --- for ^ of catcode 13, use the command line option `^13'
+--------------------------------------
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+--------------------------------------
+--- Note --- for alternative charset, use the command line option `charset=...'
+
+--------------------------------------
+--------------------------------------
+--- Note --- to ignore CSS font decoration, use the `NoFonts' command line opti
+on
+--------------------------------------
+--------------------------------------
+--- Note --- for jpg bitmaps of pictures, use the `jpg' command line option. (C
+haracter bitmaps are controled only by `g' records of tex4ht.env and `-g' switc
+hes of tex4ht.c) 
+--------------------------------------
+--------------------------------------
+--- Note --- for gif bitmaps of pictures, use the `gif' command line option. (C
+haracter bitmaps are controled only by `g' records of tex4ht.env and `-g' switc
+hes of tex4ht.c) 
+--------------------------------------
+--------------------------------------
+--- Note --- for content and toc in 2 frames, use the command line option `fram
+es'
+--------------------------------------
+--------------------------------------
+--- Note --- for content, toc, and footnotes in 3 frames, use the command line 
+option `frames-fn'
+--------------------------------------
+--------------------------------------
+--- Note --- for file extension name xht, use the command line option `xht'
+--------------------------------------
+TeX4ht package options: html
+--------------------------------------
+--- Note --- To print a timestamp, use the command line option timestamp
+--------------------------------------
+--------------------------------------
+--- Note --- to ignore CSS code, use the command line option `-css
+--------------------------------------
+--------------------------------------
+--- Note --- for inline CSS code, use the command line option `css-in'
+--------------------------------------
+--------------------------------------
+--- Note --- for pop ups on mouse over, use the command line option `mouseover'
+
+--------------------------------------
+--------------------------------------
+--- Note --- for addressing images in a subdirectory, use the command line opti
+on `imgdir:.../'
+--------------------------------------
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+)
+\:tokwrite=\toks25
+\:tokpage=\toks26
+--------------------------------------
+--- Note --- for back links to toc, use the command line option `sections+'
+--------------------------------------
+--------------------------------------
+--- Note --- for linear crosslinks of pages, use the command line option `next'
+
+--------------------------------------
+\openout15 = `main.4ct'.
+
+\:tocout=\write4
+\openout4 = `main.4tc'.
+
+ (main.4tc)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/latex.4ht
+version 2022-12-26-13:00
+LaTeX Info: Redefining \_ on input line 177.
+LaTeX Info: Redefining \begin on input line 595.
+LaTeX Info: Redefining \end on input line 643.
+LaTeX Info: Redefining \, on input line 805.
+LaTeX Info: Redefining \; on input line 806.
+LaTeX Info: Redefining \! on input line 807.
+LaTeX Info: Redefining \: on input line 808.
+LaTeX Info: Redefining \> on input line 809.
+--------------------------------------
+--- Note --- for links into captions, instead of float heads, use the command l
+ine option `refcaption'
+--------------------------------------
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+--------------------------------------
+--- Note --- For mini tocs immediately aftter the header use the command line o
+ption `minitoc<'
+--------------------------------------
+--------------------------------------
+--- Note --- for enumerated list elements with valued data, use the command lin
+e option `enumerate+'
+--------------------------------------
+--------------------------------------
+--- Note --- for enumerated list elements li's with value attributes, use the c
+ommand line option `enumerate-'
+--------------------------------------
+--------------------------------------
+--- Note --- for CSS2 code, use the command line option `css2'
+--------------------------------------
+--------------------------------------
+--- Note --- for pictorial tabular, use the command line option `pic-tabular'
+--------------------------------------
+--------------------------------------
+--- Note --- for bitmap fbox'es, use the command line option `pic-fbox'
+--------------------------------------
+--------------------------------------
+--- Note --- for bitmap framebox'es, use the command line option `pic-framebox'
+
+--------------------------------------
+--------------------------------------
+--- Note --- for inline footnotes use command line option `fn-in'
+--------------------------------------
+--------------------------------------
+--- Note --- for tracing of latex font commands, use the command line option `f
+onts'
+--------------------------------------
+--------------------------------------
+--- Note --- for width specifications of tabular p entries, use the `p-width' c
+ommand line option or a configuration similar to \Configure{HColWidth}{\HCode{ 
+style="width:\HColWidth"}}
+--------------------------------------
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+--------------------------------------
+--- Note --- for pictorial eqnarray, use the command line option `pic-eqnarray'
+
+--------------------------------------
+--------------------------------------
+--- Note --- for pictorial array, use the command line option `pic-array'
+--------------------------------------
+--------------------------------------
+--- Note --- for pictorial $...$ environments, use the command line option `pic
+-m' (not recommended!!)
+--------------------------------------
+--------------------------------------
+--- Note --- for pictorial $...$ and $$...$$ environments with latex alt, use t
+he command line option `pic-m+' (not safe!!)
+--------------------------------------
+--------------------------------------
+--- Note --- for pictorial array, use the command line option `pic-array'
+--------------------------------------
+))
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/fontmath.4ht
+version 2022-10-25-13:59
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+))
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/article.4ht
+version 2023-02-25-15:08
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+--------------------------------------
+--- Note --- for automatic sectioning pagination, use the command line option `
+1', `2', `3', '4', '5', '6', or '7'
+--------------------------------------
+--------------------------------------
+--- Note --- for files named derived from section titles, use the command line 
+option `sec-filename'
+--------------------------------------
+--------------------------------------
+--- Note --- for i-columns index, use the command line option `index=i' (e.g., 
+index=2)
+--------------------------------------
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+))
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/graphicx.4ht
+version 2022-01-12-13:53
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+))
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/graphics.4ht
+version 2022-03-20-14:29
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+--------------------------------------
+--- Note --- if included graphics are of degraded quality, try the command line
+ options `graphics-num' or `graphics-'. The `num' should provide the density of
+ pixels in the bitmaps (e.g., 110). 
+--------------------------------------
+--------------------------------------
+--- Note --- for setting image dimensions, try the option `Gin-dim'; to use per
+cents instead of units, use `Gin-perecent'; for key dimensions when bounding bo
+x is unavailable try `Gin-dim+'; neither is recommended
+--------------------------------------
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+))
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/dvips.4ht
+version 2009-05-21-09:32
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+))
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/amsmath.4ht
+version 2019-12-29-14:17
+\tmp:muskip=\muskip17
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+LaTeX Info: Redefining \[ on input line 507.
+LaTeX Info: Redefining \] on input line 507.
+))
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/amstext.4ht
+version 2009-05-21-09:32
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+))
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/amsbsy.4ht
+version 2009-05-21-09:32
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+))
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/amsopn.4ht
+version 2009-05-21-09:32
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+))
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/caption.4ht
+version 2022-11-22-14:29
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+))
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/float.4ht
+version 2009-05-21-09:32
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+))
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/mathtools.4ht
+version 2021-06-20-09:36
+
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+))
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4.4ht
+version 2023-02-03-14:50
+)
+(c:/texlive/2022/texmf-dist/tex/generic/tex4ht/html4-math.4ht
+version 2022-10-25-13:59
+))
+(c:/texlive/2022/texmf-dist/tex/latex/l3backend/l3backend-dvips.def
+File: l3backend-dvips.def 2023-01-16 L3 backend support: dvips
+\l__pdf_internal_box=\box56
+\g__pdf_backend_object_int=\count286
+\l__pdf_backend_content_box=\box57
+\l__pdf_backend_model_box=\box58
+\g__pdf_backend_annotation_int=\count287
+\g__pdf_backend_link_int=\count288
+\g__pdf_backend_link_sf_int=\count289
+)
+(./main.aux
+
+LaTeX Warning: Label `ref_label1' multiply defined.
+
+
+LaTeX Warning: Label `sub@ref_label1' multiply defined.
+
+
+LaTeX Warning: Label `ref_label2' multiply defined.
+
+
+LaTeX Warning: Label `sub@ref_label2' multiply defined.
+
+
+LaTeX Warning: Label `ref_label_overall' multiply defined.
+
+
+LaTeX Warning: Label `ref_label1' multiply defined.
+
+
+LaTeX Warning: Label `sub@ref_label1' multiply defined.
+
+
+LaTeX Warning: Label `ref_label2' multiply defined.
+
+
+LaTeX Warning: Label `sub@ref_label2' multiply defined.
+
+
+LaTeX Warning: Label `ref_label_overall' multiply defined.
+
+
+LaTeX Warning: Label `ref_label1' multiply defined.
+
+
+LaTeX Warning: Label `sub@ref_label1' multiply defined.
+
+
+LaTeX Warning: Label `ref_label2' multiply defined.
+
+
+LaTeX Warning: Label `sub@ref_label2' multiply defined.
+
+
+LaTeX Warning: Label `ref_label_overall' multiply defined.
+
+)
+\openout1 = `main.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: subfig package v1.3 is loaded.
+Package caption Info: End \AtBeginDocument code.
+--- file main.css ---
+ [1
+
+] [2]
+l. 19 Writing main.idv[1] (main0x.png)
+ [3]
+l.30 --- TeX4ht warning --- File `"Task 1/orthogonal.xbb"' not found ---
+l.30 --- TeX4ht warning --- Cannot determine size of graphic in "Task 1/orthogo
+nal.xbb" (no BoundingBox) ---
+l. 30 --- needs --- Task 1/orthogonal.png ---
+l.34 --- TeX4ht warning --- File `"Task 1/dotprod.xbb"' not found ---
+l.34 --- TeX4ht warning --- Cannot determine size of graphic in "Task 1/dotprod
+.xbb" (no BoundingBox) ---
+l. 34 --- needs --- Task 1/dotprod.png ---
+[4] [5]
+l.48 --- TeX4ht warning --- File `"Task 1/output.xbb"' not found ---
+l.48 --- TeX4ht warning --- Cannot determine size of graphic in "Task 1/output.
+xbb" (no BoundingBox) ---
+l. 48 --- needs --- Task 1/output.png ---
+l.55 --- TeX4ht warning --- File `"Task 2/supersampling.xbb"' not found ---
+l.55 --- TeX4ht warning --- Cannot determine size of graphic in "Task 2/supersa
+mpling.xbb" (no BoundingBox) ---
+l. 55 --- needs --- Task 2/supersampling.png ---
+l. 57 Writing main.idv[2] (main1x.png)
+l. 57 Writing main.idv[3] (main2x.png)
+[6]
+l.60 --- TeX4ht warning --- File `"Task 2/1.xbb"' not found ---
+l.60 --- TeX4ht warning --- Cannot determine size of graphic in "Task 2/1.xbb" 
+(no BoundingBox) ---
+l. 60 --- needs --- Task 2/1.png ---
+l.62 --- TeX4ht warning --- File `"Task 2/4.xbb"' not found ---
+l.62 --- TeX4ht warning --- Cannot determine size of graphic in "Task 2/4.xbb" 
+(no BoundingBox) ---
+l. 62 --- needs --- Task 2/4.png ---
+l.65 --- TeX4ht warning --- File `"Task 2/16.xbb"' not found ---
+l.65 --- TeX4ht warning --- Cannot determine size of graphic in "Task 2/16.xbb"
+ (no BoundingBox) ---
+l. 65 --- needs --- Task 2/16.png ---
+l.71 --- TeX4ht warning --- File `"task 3/image.xbb"' not found ---
+l.71 --- TeX4ht warning --- Cannot determine size of graphic in "task 3/image.x
+bb" (no BoundingBox) ---
+l. 71 --- needs --- task 3/image.png ---
+l. 74 Writing main.idv[4] (main3x.png)
+l. 74 Writing main.idv[5] (main4x.png)
+l. 74 Writing main.idv[6] (main5x.png)
+l. 75 Writing main.idv[7] (main6x.png)
+l. 78 Writing main.idv[8] (main7x.png)
+[7]
+l. 82 Writing main.idv[9] (main8x.png)
+l. 83 Writing main.idv[10] (main9x.png)
+l. 84 Writing main.idv[11] (main10x.png)
+ [8]
+l. 86 Writing main.idv[12] (main11x.png)
+
+l.106 --- TeX4ht warning --- File `"task 4/triangle.xbb"' not found ---
+l.106 --- TeX4ht warning --- Cannot determine size of graphic in "task 4/triang
+le.xbb" (no BoundingBox) ---
+l. 106 --- needs --- task 4/triangle.png ---
+l.110 --- TeX4ht warning --- File `"task 4/circle.xbb"' not found ---
+l.110 --- TeX4ht warning --- Cannot determine size of graphic in "task 4/circle
+.xbb" (no BoundingBox) ---
+l. 110 --- needs --- task 4/circle.png ---
+[9]
+l. 118 Writing main.idv[13] (main12x.png)
+l. 120 Writing main.idv[14] (main13x.png)
+ [10]
+l.130 --- TeX4ht warning --- File `"task 5/bilinear.xbb"' not found ---
+l.130 --- TeX4ht warning --- Cannot determine size of graphic in "task 5/biline
+ar.xbb" (no BoundingBox) ---
+l. 130 --- needs --- task 5/bilinear.png ---
+l. 133 Writing main.idv[15] (main14x.png)
+[11] [12
+
+]
+l.141 --- TeX4ht warning --- File `"task 5/NN1.xbb"' not found ---
+l.141 --- TeX4ht warning --- Cannot determine size of graphic in "task 5/NN1.xb
+b" (no BoundingBox) ---
+l. 141 --- needs --- task 5/NN1.png ---
+l.145 --- TeX4ht warning --- File `"task 5/B1.xbb"' not found ---
+l.145 --- TeX4ht warning --- Cannot determine size of graphic in "task 5/B1.xbb
+" (no BoundingBox) ---
+l. 145 --- needs --- task 5/B1.png ---
+[13
+
+] [14
+
+] [15
+
+]
+l.154 --- TeX4ht warning --- File `"task 5/NN16.xbb"' not found ---
+l.154 --- TeX4ht warning --- Cannot determine size of graphic in "task 5/NN16.x
+bb" (no BoundingBox) ---
+l. 154 --- needs --- task 5/NN16.png ---
+l.158 --- TeX4ht warning --- File `"task 5/B16.xbb"' not found ---
+l.158 --- TeX4ht warning --- Cannot determine size of graphic in "task 5/B16.xb
+b" (no BoundingBox) ---
+l. 158 --- needs --- task 5/B16.png ---
+[16
+
+]
+l. 170 Writing main.idv[16] (main15x.png)
+l. 170 Writing main.idv[17] (main16x.png)
+l. 170 Writing main.idv[18] (main17x.png)
+l. 170 Writing main.idv[19] (main18x.png)
+l. 171 Writing main.idv[20] (main19x.png)
+ [17
+
+]
+l. 172 Writing main.idv[21] (main20x.png)
+l. 177 Writing main.idv[22] (main21x.png)
+l. 178 Writing main.idv[23] (main22x.png)
+ [18] [19] [20
+
+]
+l.194 --- TeX4ht warning --- File `"task 6/NNL0.xbb"' not found ---
+l.194 --- TeX4ht warning --- Cannot determine size of graphic in "task 6/NNL0.x
+bb" (no BoundingBox) ---
+l. 194 --- needs --- task 6/NNL0.png ---
+l.198 --- TeX4ht warning --- File `"task 6/BL0.xbb"' not found ---
+l.198 --- TeX4ht warning --- Cannot determine size of graphic in "task 6/BL0.xb
+b" (no BoundingBox) ---
+l. 198 --- needs --- task 6/BL0.png ---
+[21
+
+] [22
+
+] [23
+
+]
+l.207 --- TeX4ht warning --- File `"task 6/NNNL.xbb"' not found ---
+l.207 --- TeX4ht warning --- Cannot determine size of graphic in "task 6/NNNL.x
+bb" (no BoundingBox) ---
+l. 207 --- needs --- task 6/NNNL.png ---
+l.211 --- TeX4ht warning --- File `"task 6/BNL.xbb"' not found ---
+l.211 --- TeX4ht warning --- Cannot determine size of graphic in "task 6/BNL.xb
+b" (no BoundingBox) ---
+l. 211 --- needs --- task 6/BNL.png ---
+[24
+
+] [25
+
+] (./main.aux)
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 8052 strings out of 476025
+ 117594 string characters out of 5794042
+ 1858379 words of memory out of 5000000
+ 28358 multiletter control sequences out of 15000+600000
+ 518184 words of font info for 53 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 72i,9n,91p,1366b,518s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+Output written on main.dvi (25 pages, 51280 bytes).

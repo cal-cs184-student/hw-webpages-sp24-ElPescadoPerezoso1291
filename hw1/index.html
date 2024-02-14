@@ -1,7 +1,676 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Homework 1 index.html here
-	</body>
-</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>CS184 Project 1</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (https://tug.org/tex4ht/)"> 
+<meta name="originator" content="TeX4ht (https://tug.org/tex4ht/)"> 
+<!-- html --> 
+<meta name="src" content="main.tex"> 
+<link rel="stylesheet" type="text/css" href="main.css"> 
+</head><body 
+>
+   <div class="maketitle">
+
+
+
+<h2 class="titleHead">CS184 Project 1</h2>
+<div class="author" ><span 
+class="cmr-12">Michael Huang</span></div><br />
+<div class="date" ><span 
+class="cmr-12">February 2024</span></div>
+   </div>
+   <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-10001"></a>Drawing Single-Color Triangles</h3>
+<!--l. 18--><p class="noindent" >Consider a triangle <span 
+class="cmmi-10">t </span>living in a continous plane. We can rasterize the triangle in the
+image plane by doing:
+   <div class="math-display" >
+<img 
+src="main0x.png" alt="        (
+        |{1  inside(t,x,y)
+f(x,y) = |0  o.w
+        (
+" class="math-display" ></div>
+<!--l. 23--><p class="indent" >   We can consider world coordinates similar to the pixel coordinates. The only
+difference is that world coordinates are continuous, while pixel coordinates are
+discrete. Thus, consider discrete pixel coordinates (<span 
+class="cmmi-10">i,j</span>). To make it more accurate to
+world coordinates, we consider the center of the pixel, so to convert it to
+world coordinates, we do (<span 
+class="cmmi-10">i </span>+ 0<span 
+class="cmmi-10">.</span>5<span 
+class="cmmi-10">,j </span>+ 0<span 
+class="cmmi-10">.</span>5). We would like to test if this world
+coordinates is inside the triangle for rasterization, so we proceed with the following
+test.
+   <h4 class="subsectionHead"><span class="titlemark">1.1   </span> <a 
+ id="x1-20001.1"></a>The Three Line Test</h4>
+
+<!--l. 25--><p class="noindent" >A triangle can be represented as three vertices (<span 
+class="cmmi-10">p</span><sub><span 
+class="cmr-7">1</span></sub><span 
+class="cmmi-10">,p</span><sub><span 
+class="cmr-7">2</span></sub><span 
+class="cmmi-10">,p</span><sub><span 
+class="cmr-7">3</span></sub>), with line segments
+connecting them. To test if a point <span 
+class="cmmi-10">p </span>is inside a triangle, we need to figure out if the
+point <span 
+class="cmmi-10">p </span>is on one side of the line segment or the other. To do this, we turn toward
+geometry. <br 
+class="newline" /><br 
+class="newline" />Let <span 
+class="cmmi-10">p </span>= (<span 
+class="cmmi-10">i </span>+ 0<span 
+class="cmmi-10">.</span>5<span 
+class="cmmi-10">,j </span>+ 0<span 
+class="cmmi-10">.</span>5) be the point we would like to test, and let <span 
+class="cmmi-10">p</span><sub><span 
+class="cmmi-7">test</span></sub> = <span 
+class="cmmi-10">p</span><sub><span 
+class="cmr-7">1</span></sub> <span 
+class="cmsy-10">-</span><span 
+class="cmmi-10">p</span><sub><span 
+class="cmr-7">0</span></sub> be
+the line segment we would like to inspect, with <span 
+class="cmmi-10">p</span><sub><span 
+class="cmr-7">0</span></sub> as its origin. First, we determine
+the orthogonal vector to <span 
+class="cmmi-10">p</span><sub><span 
+class="cmmi-7">test</span></sub>, denoted <span 
+class="cmmi-10">p</span><sub><span 
+class="cmsy-7">&#x22A5;</span></sub>. Recall the orthogonal line will simply
+have a dot product of zero, so <span 
+class="cmmi-10">p</span><sub><span 
+class="cmsy-7">&#x22A5;</span></sub> = (<span 
+class="cmsy-10">-</span><span 
+class="cmmi-10">y</span><sub><span 
+class="cmmi-7">test</span></sub><span 
+class="cmmi-10">,x</span><sub><span 
+class="cmmi-7">test</span></sub>) = (<span 
+class="cmsy-10">-</span>(<span 
+class="cmmi-10">y</span><sub><span 
+class="cmr-7">1</span></sub> <span 
+class="cmsy-10">- </span><span 
+class="cmmi-10">y</span><sub><span 
+class="cmr-7">0</span></sub>)<span 
+class="cmmi-10">,x</span><sub><span 
+class="cmr-7">1</span></sub> <span 
+class="cmsy-10">- </span><span 
+class="cmmi-10">x</span><sub><span 
+class="cmr-7">0</span></sub>).
+<div class="center" 
+>
+<!--l. 29--><p class="noindent" >
+<!--l. 30--><p class="noindent" ><img 
+src="Task 1/orthogonal.png" alt="PIC"  
+></div>
+<!--l. 32--><p class="noindent" >Now, we can use the orthogonal vector to determine if the point is on one side of the
+segment or the other. First, we must change the origin of <span 
+class="cmmi-10">p</span>, so our point vector is
+<span 
+class="cmmi-10">p </span><span 
+class="cmsy-10">- </span><span 
+class="cmmi-10">p</span><sub><span 
+class="cmr-7">0</span></sub>. Next, we can take the dot product with our orthogonal vector and our test
+vector. This is so we can determine the angle between the orthogonal vector and the
+test vector, since <span 
+class="cmmi-10">&#x003C; u,v &#x003E;</span>= <span 
+class="cmsy-10">||</span><span 
+class="cmmi-10">u</span><span 
+class="cmsy-10">||</span><sub><span 
+class="cmr-7">2</span></sub><span 
+class="cmsy-10">||</span><span 
+class="cmmi-10">v</span><span 
+class="cmsy-10">||</span><sub><span 
+class="cmr-7">2</span></sub><span 
+class="cmmi-10">cos&#x03B8;</span>. if (<span 
+class="cmmi-10">p </span><span 
+class="cmsy-10">- </span><span 
+class="cmmi-10">p</span><sub><span 
+class="cmr-7">0</span></sub>)<sup><span 
+class="cmmi-7">T</span></sup><span 
+class="cmmi-10">p</span><sub><span 
+class="cmsy-7">&#x22A5;</span></sub><span 
+class="cmsy-10">&#x2265; </span>0, then the angle
+<span 
+class="cmmi-10">&#x03B8; </span><span 
+class="cmsy-10">&#x2208; </span>[0<span 
+class="cmmi-10">,&#x03C0;</span>], meaning it is above the line segment. Otherwise, it&#8217;s below. For our
+purposes, if we consider the point to be above all three line segments, then it is inside
+the triangle. However, it may also be the case that being <span 
+class="cmti-10">below </span>the line segment
+may also be inside the triangle. Thus, one must consider both the clockwise
+and counterclockwise orientation of the triangle when doing the three line
+test.
+<div class="center" 
+>
+<!--l. 33--><p class="noindent" >
+<!--l. 34--><p class="noindent" ><img 
+src="Task 1/dotprod.png" alt="PIC"  
+></div>
+<!--l. 36--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">1.2   </span> <a 
+ id="x1-30001.2"></a>Algorithm</h4>
+<!--l. 37--><p class="noindent" >The algorithm is now simple. For every pixel inside the bounding box of the triangle
+(which is simply the minimum and maximum values of the vertices of the triangle),
+we test if the pixel in world coordinates is inside the triangle, if it is, we color the
+pixel the desired color, and otherwise, we leave it alone. As per the specifications, this
+is no worse than checking each sample within the bounding box of the triangle. The
+pseudocode is thus simple:
+
+   <pre class="verbatim" id="verbatim-1">
+function&#x00A0;rasterize(triangle&#x00A0;t,&#x00A0;color&#x00A0;c):
+&#x00A0;&#x00A0;&#x00A0;&#x00A0;for&#x00A0;(x,&#x00A0;y)&#x00A0;in&#x00A0;bounding&#x00A0;box&#x00A0;of&#x00A0;triangle:
+&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;if&#x00A0;(x&#x00A0;+&#x00A0;0.5,&#x00A0;y&#x00A0;+&#x00A0;0.5)&#x00A0;inside&#x00A0;triangle:
+&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;&#x00A0;fill_pixel(x,&#x00A0;y,&#x00A0;x)
+</pre>
+<!--l. 43--><p class="nopar" >
+
+   <h4 class="subsectionHead"><span class="titlemark">1.3   </span> <a 
+ id="x1-40001.3"></a>Outputs</h4>
+<!--l. 46--><p class="noindent" >Here is the output for test4.svg. I focus in on the vertiex of the triangle, because that
+one is the most susceptible to aliasing:
+<div class="center" 
+>
+<!--l. 47--><p class="noindent" >
+<!--l. 48--><p class="noindent" ><img 
+src="Task 1/output.png" alt="PIC"  
+></div>
+<!--l. 50--><p class="noindent" >We can see at the vertex that there is clear aliasing, and are many obvious
+jaggies. This is a sign that we are sampling from a very high frequency at
+this point, and must sample from a lower frequency to get a less aliased
+image.
+   <h3 class="sectionHead"><span class="titlemark">2   </span> <a 
+ id="x1-50002"></a>Antialiasing by Supersampling</h3>
+<!--l. 52--><p class="noindent" >As before, we can see that there is aliasing in the triangles, meaning that the signal is
+too high frequency to sample from. Thus, to alleviate this, we can do supersampling,
+a technique that approximates the box filter and allows us to filter out higher level
+frequencies and collect lower level frequencies. This alleviates some of the jaggies we
+had earlier.
+   <h4 class="subsectionHead"><span class="titlemark">2.1   </span> <a 
+ id="x1-60002.1"></a>Supersampling Algorithm</h4>
+<div class="center" 
+>
+<!--l. 54--><p class="noindent" >
+<!--l. 55--><p class="noindent" ><img 
+src="Task 2/supersampling.png" alt="PIC"  
+></div>
+<!--l. 57--><p class="noindent" >The idea with supersampling is that you sample <span 
+class="cmti-10">more</span>, then with that higher resolution
+sample, we blur it down to our desired resolution. The higher resolution sample
+collects higher frequencies, and the blur filters them out, effectively working as a low
+pass filter. Let <span 
+class="cmmi-10">K </span>be the number of sample per pixel, and let (<span 
+class="cmmi-10">i,j</span>) be our desired
+pixel we would like to color. In this pixel, we will test whether <span 
+class="cmmi-10">K </span>points
+are inside the triangle or not, then average it. i.e, for indices (<span 
+class="cmmi-10">a,b</span>) inside
+the pixel, we test <span 
+class="cmmi-10">x </span>= <span 
+class="cmmi-10">i </span>+ <img 
+src="main1x.png" alt="22a&#x221A;+K1"  class="frac" align="middle"><span 
+class="cmmi-10">,y </span>= <span 
+class="cmmi-10">j </span>+ <img 
+src="main2x.png" alt="22b&#x221A;+K1"  class="frac" align="middle"> is inside the triangle, for all
+(<span 
+class="cmmi-10">i,j</span>).
+   <h4 class="subsectionHead"><span class="titlemark">2.2   </span> <a 
+ id="x1-70002.2"></a>Results</h4>
+
+<div class="center" 
+>
+<!--l. 59--><p class="noindent" >
+<!--l. 60--><p class="noindent" ><img 
+src="Task 2/1.png" alt="PIC"  
+>
+<!--l. 62--><p class="noindent" ><img 
+src="Task 2/4.png" alt="PIC"  
+>
+<!--l. 65--><p class="noindent" ><img 
+src="Task 2/16.png" alt="PIC"  
+></div>
+<!--l. 67--><p class="noindent" >We can see that as we increase the number of samples per pixel, the triangle vertex
+becomes more and more prominent. This is because we are allowed to take more
+samples at a high frequency area, thus, prevent aliasing. We can see aliasing
+occurring with 1 sample per pixel, as this is aliased to be a separated part of the
+triangle. However, with taking more samples, then averaging, we are able to get a
+better defined version of the triangle vertex.
+   <h3 class="sectionHead"><span class="titlemark">3   </span> <a 
+ id="x1-80003"></a>Transforms</h3>
+<!--l. 69--><p class="noindent" >Here, I had cubeman do the splits! To do this, I rotated the entire right leg
+by 90 degrees, and rotated the entire left leg by -90 degrees. This was the
+result:
+<div class="center" 
+>
+<!--l. 70--><p class="noindent" >
+<!--l. 71--><p class="noindent" ><img 
+src="task 3/image.png" alt="PIC"  
+></div>
+<!--l. 73--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">4   </span> <a 
+ id="x1-90004"></a>Barycentric Coordinates</h3>
+<!--l. 74--><p class="noindent" >For a triangle with vertices <span 
+class="cmmi-10">A,B,C</span>, and a reference point <img 
+src="main3x.png" alt="&#x20D7;p"  class="vec" > , with <img 
+src="main4x.png" alt="&#x20D7;p"  class="vec" > , we
+can describe the relative positioning of <img 
+src="main5x.png" alt="&#x20D7;p"  class="vec" > as a convex combination of the
+vertices:
+   <div class="math-display" >
+<img 
+src="main6x.png" alt="&#x20D7;p = &#x03B1;A + &#x03B2;B + &#x03B3;C
+" class="math-display" ></div>
+<!--l. 78--><p class="indent" >
+
+   <div class="math-display" >
+<img 
+src="main7x.png" alt="&#x03B1;+ &#x03B2; + &#x03B3; = 1
+" class="math-display" ></div>
+<!--l. 81--><p class="indent" >   More intuitively, if we split the triangle into 3 separate triangles, then (<span 
+class="cmmi-10">&#x03B1;,&#x03B2;,&#x03B3;</span>) is
+the relative ratio of the area of these three triangles. One can solve for <span 
+class="cmmi-10">&#x03B1;,&#x03B2;,&#x03B3; </span>by
+solving the following set of linear equations.
+   <div class="math-display" >
+<img 
+src="main8x.png" alt="x  = &#x03B1;x + &#x03B2;x  + &#x03B3;x
+ p     1     2    3
+" class="math-display" ></div>
+<!--l. 83--><p class="indent" >
+   <div class="math-display" >
+<img 
+src="main9x.png" alt="yp = &#x03B1;y1 + &#x03B2;y2 + &#x03B3;y3
+" class="math-display" ></div>
+<!--l. 84--><p class="indent" >
+   <div class="math-display" >
+<img 
+src="main10x.png" alt="1 = &#x03B1; + &#x03B2; + &#x03B3;
+" class="math-display" ></div>
+
+<!--l. 85--><p class="indent" >   In matrix vector form, this is:
+   <div class="math-display" >
+<img 
+src="main11x.png" alt="            &#x230A;  &#x230B;
+&#x230A;          &#x230B;  &#x03B1;    &#x230A;  &#x230B;
+&#x2308;x1  x2  x3&#x2309;|| &#x03B2;||   &#x2308;xp&#x2309;
+ y1  y2  y3 &#x2308; &#x03B3;&#x2309; =  yp
+  1   1  1           1
+" class="math-display" ></div>
+<!--l. 104--><p class="indent" >   This is best described with a colored triangle. As we move (<span 
+class="cmmi-10">x,y</span>), parts of the
+triangle, relative to distance, will become more of a different color:
+<div class="center" 
+>
+<!--l. 105--><p class="noindent" >
+<!--l. 106--><p class="noindent" ><img 
+src="task 4/triangle.png" alt="PIC"  
+></div>
+<!--l. 108--><p class="noindent" >Below is the result of test7.svg using barycentric coordinates.
+<div class="center" 
+>
+<!--l. 109--><p class="noindent" >
+<!--l. 110--><p class="noindent" ><img 
+src="task 4/circle.png" alt="PIC"  
+></div>
+<!--l. 112--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">5   </span> <a 
+ id="x1-100005"></a>&#8221;Pixel Sampling&#8221; for Texture Mapping</h3>
+<!--l. 113--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">5.1   </span> <a 
+ id="x1-110005.1"></a>Texture Sampling</h4>
+<!--l. 114--><p class="noindent" >In pixel sampling, we have two domains, the &#8221;screen space&#8221; and the &#8221;texture
+space.&#8221; These are related to eachother by their corresponding triangles. For
+example, if we have triangle (<span 
+class="cmmi-10">A,B,C</span>) in screen space, then there&#8217;s a triangle
+(<span 
+class="cmmi-10">A</span><span 
+class="cmsy-10">&#x2032;</span><span 
+class="cmmi-10">,B</span><span 
+class="cmsy-10">&#x2032;</span><span 
+class="cmmi-10">,C</span><span 
+class="cmsy-10">&#x2032;</span>) that maps the texture on the texture map. However, these triangles
+need not have the exact same coordinates, nor the exact same orientation.
+They are simply mappings that relate from screen space to texture space.
+<br 
+class="newline" /><br 
+class="newline" />Recall that we defined the barycentric coordinates in part 4. We can use the
+
+barycentric coordinates to define the relative positioning of the correspondence
+triangle from screen space to texture space. Let (<span 
+class="cmmi-10">x,y</span>) be a screen space coordinate
+inside a triangle, and let (<span 
+class="cmmi-10">u,v</span>) be its cooresponidng texture space coordinate. With
+barycentric coordinates, we can describe (<span 
+class="cmmi-10">x,y</span>) as:
+   <div class="math-display" >
+<img 
+src="main12x.png" alt="(x,y) = &#x03B1;A + &#x03B2;B + &#x03B3;C
+" class="math-display" ></div>
+<!--l. 119--><p class="indent" >   With said relative positioning, we can describe texture space coordinates
+as:
+   <div class="math-display" >
+<img 
+src="main13x.png" alt="(u,v) = &#x03B1;A &#x2032; + &#x03B2;B&#x2032; + &#x03B3;C &#x2032;
+" class="math-display" ></div>
+<!--l. 121--><p class="indent" >   Thus, we can sample from screen space, and use that sample to sample from
+texture space. <br 
+class="newline" /><br 
+class="newline" />Since our samples are continuous, they do not need to relate exactly to integer
+coordinates. Thus, when we sample a (<span 
+class="cmmi-10">u,v</span>) texture coordinate, we need to map it
+back to an actual pixel in texture space.
+   <h4 class="subsectionHead"><span class="titlemark">5.2   </span> <a 
+ id="x1-120005.2"></a>Nearest Neighbor Sampling</h4>
+<!--l. 126--><p class="noindent" >Nearest neighbor sampling simply gets the nearest pixel coordinate to our sample
+(<span 
+class="cmmi-10">u,v</span>). In other words, we just round our pixel coordinate (<span 
+class="cmmi-10">u </span><span 
+class="cmsy-10">* </span><span 
+class="cmmi-10">height,v </span><span 
+class="cmsy-10">* </span><span 
+class="cmmi-10">width</span>) to
+the nearest integer.
+
+   <h4 class="subsectionHead"><span class="titlemark">5.3   </span> <a 
+ id="x1-130005.3"></a>Bilinear Sampling</h4>
+<!--l. 128--><p class="noindent" >Bilinear sampling takes a more continious approach. Let (<span 
+class="cmmi-10">u,v</span>) be our texture
+coordinate, and let <span 
+class="cmmi-10">u</span><sub><span 
+class="cmr-7">00</span></sub><span 
+class="cmmi-10">,u</span><sub><span 
+class="cmr-7">10</span></sub><span 
+class="cmmi-10">,u</span><sub><span 
+class="cmr-7">01</span></sub><span 
+class="cmmi-10">,u</span><sub><span 
+class="cmr-7">11</span></sub> be its 4 nearest pixel neighbors. Bilinear
+sampling, similar to barycentric coordinates, will use a weighted average of the 4
+neighbors, weighted by its distance from the neighbor.
+<div class="center" 
+>
+<!--l. 129--><p class="noindent" >
+<!--l. 130--><p class="noindent" ><img 
+src="task 5/bilinear.png" alt="PIC"  
+></div>
+<!--l. 132--><p class="noindent" >As above, let <span 
+class="cmmi-10">s </span>and <span 
+class="cmmi-10">t </span>be the distance from relative texture coordinate <span 
+class="cmmi-10">u</span><sub><span 
+class="cmr-7">00</span></sub>. Then our
+weighting scheme, and our final color, is:
+   <div class="math-display" >
+<img 
+src="main14x.png" alt="C = (1- s)(1 - t)u00 + s(1- t)u10 + (1 - s)tu01 + stu11
+" class="math-display" ></div>
+<!--l. 134--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">5.4   </span> <a 
+ id="x1-140005.4"></a>Results</h4>
+<!--l. 135--><p class="noindent" >Below, I run results on both Nearest Neighbor Sampling and Bilinear sampling and
+compare their results below: <hr class="figure"><div class="figure" 
+>
+
+
+<a 
+ id="x1-14001r1"></a>
+<!--l. 141--><p class="noindent" > <img 
+src="task 5/NN1.png" alt="PIC"  
+width="722" height="722" >
+<span 
+class="cmr-8">(a)</span>
+<span 
+class="cmr-8">Nearest</span>
+<span 
+class="cmr-8">Neighbor</span>
+<span 
+class="cmr-8">Sampling</span><a 
+ id="x1-14002r2"></a><img 
+src="task 5/B1.png" alt="PIC"  
+width="722" height="722" >
+     <span 
+class="cmr-8">(b)</span>
+     <span 
+class="cmr-8">Bilinear</span>
+     <span 
+class="cmr-8">Sampling</span><a 
+ id="x1-14003r1"></a>
+<br />                                                                  <div class="caption" 
+><span class="id">
+Figure&#x00A0;1: </span><span  
+class="content">Supersampling With 1 Pixel                                  </span></div><!--tex4ht:label?: x1-14003r1 -->
+
+<!--l. 148--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 149--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+
+<a 
+ id="x1-14004r1"></a>
+<!--l. 154--><p class="noindent" > <img 
+src="task 5/NN16.png" alt="PIC"  
+width="722" height="722" >
+<span 
+class="cmr-8">(a)</span>
+<span 
+class="cmr-8">Nearest</span>
+<span 
+class="cmr-8">Neighbor</span>
+<span 
+class="cmr-8">Sampling</span><a 
+ id="x1-14005r2"></a><img 
+src="task 5/B16.png" alt="PIC"  
+width="722" height="722" >
+     <span 
+class="cmr-8">(b)</span>
+     <span 
+class="cmr-8">Bilinear</span>
+     <span 
+class="cmr-8">Sampling</span><a 
+ id="x1-14006r2"></a>
+<br />                                                                  <div class="caption" 
+><span class="id">
+Figure&#x00A0;2: </span><span  
+class="content">Supersampling With 16 Pixels                                </span></div><!--tex4ht:label?: x1-14006r2 -->
+
+<!--l. 161--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 162--><p class="indent" >   Here, I argue that Bilinear Sampling defeats Nearest Neighbor Sampling. In the
+pixel inspector, we can see that many times Nearest Neighbor Sampling will end up
+using white pixels, causing very sharp edges and high frequencies. However, for
+Bilinear Sampling, we get a much smoother cutoff, as one can see in Figure 1 and
+Figure 2. <br 
+class="newline" /><br 
+class="newline" />We can see large differences when sampling at different frequencies. When sampling a
+small number of points per pixel, (i.e 1 sample per pixel), this will cause large
+differences, since nearest neighbor will end up creating high frequency outputs (i.e 1
+to 0 instantly). However, with bilinear sampling, this will create a smoother
+cutoff, rather than the sharp cutoff seen in nearest neighbor, which one can
+see in figure 1. When sampling at a higher frequency (i.e 16 samples per
+pixel), the difference will be less obvious, but still be there. This is because
+when supersampling, we will filter out the high frequency signals created by
+nearest neighbor, creating a smoother cutoff than before, similar to bilinear
+sampling.
+   <h3 class="sectionHead"><span class="titlemark">6   </span> <a 
+ id="x1-150006"></a>&#8221;Level Sampling&#8221; With Mipmaps for Texture Mapping</h3>
+<!--l. 167--><p class="noindent" >Recall that we have a texture map for our texture sampling. However, at different
+distances of the image, there can be aliasing due to the high frequency change from
+far away. If we simply filter out the high frequencies, this may cause blurring at parts
+of the image that are close (i.e low frequency signals). Thus, we use mipmaps, which
+is stored resolutions of the texture map. If the texture is far and is of high frequency,
+we use a higher level (lower resolution) mipmap, and if it&#8217;s closer with lower level
+frequencies, we use a lower level (high resolution) mipmap. To determine
+the mipmap level, we simply consider the change across neighboring pixels.
+<br 
+class="newline" /><br 
+class="newline" />To implement this, let (<span 
+class="cmmi-10">u,v</span>) be the texel we are consdering of sampling. For low
+frequency signals, the pixel should not be changing that much, so we want a lower
+level, and for higher frequency signals, the pixel should be changing a lot, so we want
+a higher level. Let the difference in neighboring pixels be denoted (<img 
+src="main15x.png" alt="ddux"  class="frac" align="middle"><span 
+class="cmmi-10">,</span><img 
+src="main16x.png" alt="dudy"  class="frac" align="middle">) and
+(<img 
+src="main17x.png" alt="dv
+dx"  class="frac" align="middle"><span 
+class="cmmi-10">,</span><img 
+src="main18x.png" alt="dv
+dy"  class="frac" align="middle">) (these are not <span 
+class="cmti-10">actual </span>derivatives, but simply the difference between the
+considered texel (<span 
+class="cmmi-10">u,v</span>) and it&#8217;s right and up neighbors). We thus determine level
+as:
+   <div class="math-display" >
+
+<img 
+src="main19x.png" alt="L = log2 D
+" class="math-display" ></div>
+<!--l. 172--><p class="indent" >
+   <div class="math-display" >
+<img 
+src="main20x.png" alt="D = max (||&#x2207;u||2,||&#x2207;v ||2)
+" class="math-display" ></div>
+<!--l. 173--><p class="indent" >   Here, <span 
+class="cmmi-10">L </span>should be clamped to it&#8217;s minimum and maximum level of stored
+mipmap. A log <sub><span 
+class="cmr-7">2</span></sub> is used since the resolution of each mipmap is divided by 2, and the
+maximum was just here as a design choice. <br 
+class="newline" /><br 
+class="newline" />Many times though, <span 
+class="cmmi-10">L </span>is a float, which should not be ignored. Thus, it also
+makes sense to use a bilinear combination of mipmaps, i.e, get the color
+as:
+   <div class="math-display" >
+<img 
+src="main21x.png" alt="&#x03B1; = L - &#x230A;L&#x230B;
+" class="math-display" ></div>
+<!--l. 178--><p class="indent" >
+   <div class="math-display" >
+<img 
+src="main22x.png" alt="C = (1 - &#x03B1; )sample(&#x230A;L&#x230B;)+ &#x03B1;sample(&#x2308;L&#x2309;)
+" class="math-display" ></div>
+
+<!--l. 179--><p class="indent" >   Now, for screen space point (<span 
+class="cmmi-10">x,y</span>), calculate it&#8217;s texel coordinate (<span 
+class="cmmi-10">u,v</span>) using
+barycentric coordinates, then similarly get its texel neighbors by doing the same
+thing with (<span 
+class="cmmi-10">x </span>+ 1<span 
+class="cmmi-10">,y</span>) and (<span 
+class="cmmi-10">x,y </span>+ 1). Calculate its discrete derivatives, and
+calculate the clamped mipmap level <span 
+class="cmmi-10">L</span>, and use that mipmap level to sample the
+texel.
+   <h4 class="subsectionHead"><span class="titlemark">6.1   </span> <a 
+ id="x1-160006.1"></a>Tradeoffs: Speed, Memory, and Antialiasing</h4>
+<!--l. 181--><p class="noindent" ><span 
+class="cmbx-10">Pixel Sampling</span>: In pixel sampling, we used two techniques: Nearest Neighbor and
+Bilinear sampling, which do have its payoffs. With Nearest Neighbor, we get much
+better speed, as this is simply just two rounding operations, which is simpling cutting
+off a float. Compared to Bilinear Sampling which has much more floating point
+operations, Nearest Neighbor wins in the speed category. However, Bilinear sampling
+defeats nearest neighbors when it comes to antialiasing, as we get much smoother
+textures, whereas nearest neighbor will generate jagged artifacts. Their memory
+usage is almost identical. <br 
+class="newline" /><br 
+class="newline" /><span 
+class="cmbx-10">Level Sampling:  </span>For level sampling, we can either do <span 
+class="cmmi-10">L </span>= 0, use the nearest <span 
+class="cmmi-10">L</span>, or
+a bilinear combination of <span 
+class="cmmi-10">L</span>. <span 
+class="cmmi-10">L </span>= 0 is the simplest approach, having the highest
+speed with less FLOPs and less memory accesses, but is susceptiple to the
+issue of aliasing at high frequency locations (i.e far away spots). Using the
+nearest <span 
+class="cmmi-10">L </span>is better with aliasing, but has less speed due to more memory
+accesses and FLOPs. With bilinear <span 
+class="cmmi-10">L</span>, this helps with aliasing even more,
+but must sample textures twice as much and has more FLOPs, sacrificing
+speed even more. The memory usage across all of these is almost identical.
+<br 
+class="newline" /><br 
+class="newline" /><span 
+class="cmbx-10">Number of Samples Per Pixel:  </span>Increasing the number of samples per pixel will
+always help with aliasing, but has huge consequences for speed and memory, as we
+must store each of these samples in a sample buffer, as well as sample much
+more.
+   <h4 class="subsectionHead"><span class="titlemark">6.2   </span> <a 
+ id="x1-170006.2"></a>Custom Results</h4>
+<!--l. 189--><p class="noindent" ><hr class="figure"><div class="figure" 
+>
+
+
+<a 
+ id="x1-17001r1"></a>
+<!--l. 194--><p class="noindent" > <img 
+src="task 6/NNL0.png" alt="PIC"  
+>
+<span 
+class="cmr-8">(a)</span>
+<span 
+class="cmr-8">Nearest</span>
+<span 
+class="cmr-8">Neighbor</span>
+<span 
+class="cmr-8">Sampling</span><a 
+ id="x1-17002r2"></a><img 
+src="task 6/BL0.png" alt="PIC"  
+>
+     <span 
+class="cmr-8">(b)</span>
+     <span 
+class="cmr-8">Bilinear</span>
+     <span 
+class="cmr-8">Sampling</span><a 
+ id="x1-17003r3"></a>
+<br />                                                                  <div class="caption" 
+><span class="id">
+Figure&#x00A0;3: </span><span  
+class="content">Level 0 Sampling                                           </span></div><!--tex4ht:label?: x1-17003r3 -->
+
+<!--l. 201--><p class="noindent" ></div><hr class="endfigure">
+<!--l. 202--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+
+<a 
+ id="x1-17004r1"></a>
+<!--l. 207--><p class="noindent" > <img 
+src="task 6/NNNL.png" alt="PIC"  
+>
+<span 
+class="cmr-8">(a)</span>
+<span 
+class="cmr-8">Nearest</span>
+<span 
+class="cmr-8">Neighbor</span>
+<span 
+class="cmr-8">Sampling</span><a 
+ id="x1-17005r2"></a><img 
+src="task 6/BNL.png" alt="PIC"  
+>
+     <span 
+class="cmr-8">(b)</span>
+     <span 
+class="cmr-8">Bilinear</span>
+     <span 
+class="cmr-8">Sampling</span><a 
+ id="x1-17006r4"></a>
+<br />                                                                  <div class="caption" 
+><span class="id">
+Figure&#x00A0;4: </span><span  
+class="content">Nearest Level Sampling                                      </span></div><!--tex4ht:label?: x1-17006r4 -->
+
+<!--l. 214--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 215--><p class="indent" >   We can see that in level 0 sampling, the whiskers are more prominent than the
+nearest neighbor. This is even more prominent when we do nearest level. We can
+see that the whiskers are much more smoother and continuous than the
+nearest neighbor sampling, due to the high frequencies from nearest neighbor
+sampling.
+    
+</body></html> 
+
+
+

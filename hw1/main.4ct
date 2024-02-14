@@ -1,0 +1,23 @@
+\expandafter\ifx\csname doTocEntry\endcsname\relax \expandafter\endinput\fi 
+\doTocEntry\tocsection{1}{\csname a:TocLink\endcsname{1}{x1-10001}{QQ2-1-1}{Drawing Single-Color Triangles}}{3}\relax 
+\doTocEntry\tocsubsection{1.1}{\csname a:TocLink\endcsname{1}{x1-20001.1}{QQ2-1-2}{The Three Line Test}}{3}\relax 
+\doTocEntry\tocsubsection{1.2}{\csname a:TocLink\endcsname{1}{x1-30001.2}{QQ2-1-3}{Algorithm}}{4}\relax 
+\doTocEntry\tocsubsection{1.3}{\csname a:TocLink\endcsname{1}{x1-40001.3}{QQ2-1-4}{Outputs}}{6}\relax 
+\doTocEntry\tocsection{2}{\csname a:TocLink\endcsname{1}{x1-50002}{QQ2-1-5}{Antialiasing by Supersampling}}{6}\relax 
+\doTocEntry\tocsubsection{2.1}{\csname a:TocLink\endcsname{1}{x1-60002.1}{QQ2-1-6}{Supersampling Algorithm}}{6}\relax 
+\doTocEntry\tocsubsection{2.2}{\csname a:TocLink\endcsname{1}{x1-70002.2}{QQ2-1-7}{Results}}{6}\relax 
+\doTocEntry\tocsection{3}{\csname a:TocLink\endcsname{1}{x1-80003}{QQ2-1-8}{Transforms}}{7}\relax 
+\doTocEntry\tocsection{4}{\csname a:TocLink\endcsname{1}{x1-90004}{QQ2-1-9}{Barycentric Coordinates}}{7}\relax 
+\doTocEntry\tocsection{5}{\csname a:TocLink\endcsname{1}{x1-100005}{QQ2-1-10}{"Pixel Sampling" for Texture Mapping}}{9}\relax 
+\doTocEntry\tocsubsection{5.1}{\csname a:TocLink\endcsname{1}{x1-110005.1}{QQ2-1-11}{Texture Sampling}}{9}\relax 
+\doTocEntry\tocsubsection{5.2}{\csname a:TocLink\endcsname{1}{x1-120005.2}{QQ2-1-12}{Nearest Neighbor Sampling}}{10}\relax 
+\doTocEntry\tocsubsection{5.3}{\csname a:TocLink\endcsname{1}{x1-130005.3}{QQ2-1-13}{Bilinear Sampling}}{11}\relax 
+\doTocEntry\tocsubsection{5.4}{\csname a:TocLink\endcsname{1}{x1-140005.4}{QQ2-1-14}{Results}}{11}\relax 
+\doTocEntry\toclof{1}{\csname a:TocLink\endcsname{1}{x1-14003r1}{}{\ignorespaces Supersampling With 1 Pixel\relax }}{figure}\relax 
+\doTocEntry\toclof{2}{\csname a:TocLink\endcsname{1}{x1-14006r2}{}{\ignorespaces Supersampling With 16 Pixels\relax }}{figure}\relax 
+\doTocEntry\tocsection{6}{\csname a:TocLink\endcsname{1}{x1-150006}{QQ2-1-17}{"Level Sampling" With Mipmaps for Texture Mapping}}{17}\relax 
+\doTocEntry\tocsubsection{6.1}{\csname a:TocLink\endcsname{1}{x1-160006.1}{QQ2-1-18}{Tradeoffs: Speed, Memory, and Antialiasing}}{19}\relax 
+\doTocEntry\tocsubsection{6.2}{\csname a:TocLink\endcsname{1}{x1-170006.2}{QQ2-1-19}{Custom Results}}{19}\relax 
+\doTocEntry\toclof{3}{\csname a:TocLink\endcsname{1}{x1-17003r3}{}{\ignorespaces Level 0 Sampling\relax }}{figure}\relax 
+\doTocEntry\toclof{4}{\csname a:TocLink\endcsname{1}{x1-17006r4}{}{\ignorespaces Nearest Level Sampling\relax }}{figure}\relax 
+\par 
