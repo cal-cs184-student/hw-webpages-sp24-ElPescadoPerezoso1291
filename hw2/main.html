@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>CS184 Project 2</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (https://tug.org/tex4ht/)"> 
+<meta name="originator" content="TeX4ht (https://tug.org/tex4ht/)"> 
+<!-- html --> 
+<meta name="src" content="main.tex"> 
+<link rel="stylesheet" type="text/css" href="main.css"> 
+</head><body 
+>
+   <div class="maketitle">
+
+
+
+<h2 class="titleHead">CS184 Project 2</h2>
+<div class="author" ><span 
+class="cmr-12">Michael Huang</span></div><br />
+<div class="date" ><span 
+class="cmr-12">February 2024</span></div>
+   </div>In this project, we worked with both Bezier Curves and Surfaces. We investigated
+how Bezier Curves can be implemented through De Castelijau&#8217;s algorithm, and how
+we can extend that to the 3d case. <br 
+class="newline" /><br 
+class="newline" />In the second part, we worked with 3d triangle meshes, specifically, how to traverses
+triangles meshes and how to preform operations on triangle meshes. We preform
+Edge Splits, Edge Flips, Area Normalization, and Loop Subdivision using the
+halfedge data structure.
+   <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-10001"></a>Bezier Curves and Surfaces</h3>
+<!--l. 16--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">1.1   </span> <a 
+ id="x1-20001.1"></a>Bezier Curves with 1D De Casteljau Subdivision</h4>
+<!--l. 17--><p class="noindent" >De Casteljau&#8217;s algorithm uses a recursive algorithm to find the point on the bezier
+curve. Given we have <span 
+class="cmmi-10">n </span>control points, we do:
+   <div class="math-display" >
+<img 
+src="main0x.png" alt="p&#x2032;i = lerp(pi,pi+1,t) = (1- t)pi + tpi+1
+" class="math-display" ></div>
+<!--l. 19--><p class="indent" >   We continue this recursive step until there&#8217;s only 1 point. To get the full bezier
+curve, we move <span 
+class="cmmi-10">t </span><span 
+class="cmsy-10">&#x2208; </span>[0<span 
+class="cmmi-10">,</span>1]. Below is an example of an output with 6 control
+points.
+
+<div class="center" 
+>
+<!--l. 20--><p class="noindent" >
+<!--l. 21--><p class="noindent" ><img 
+src="Part 1/bez1.png" alt="PIC"  
+></div>
+<!--l. 23--><p class="noindent" >To show the recursive nature of the algorithm, below is each step of De Casteljau&#8217;s
+algorithm.
+<div class="center" 
+>
+<!--l. 24--><p class="noindent" >
+<!--l. 25--><p class="noindent" ><img 
+src="Part 1/step1.png" alt="PIC"  
+> <img 
+src="Part 1/step2.png" alt="PIC"  
+> <img 
+src="Part 1/step3.png" alt="PIC"  
+> <img 
+src="Part 1/step4.png" alt="PIC"  
+> <img 
+src="Part 1/step5.png" alt="PIC"  
+> <img 
+src="Part 1/step6.png" alt="PIC"  
+></div>
+<!--l. 32--><p class="noindent" >We can also change the location of the control point to change the curve:
+<div class="center" 
+>
+<!--l. 33--><p class="noindent" >
+<!--l. 34--><p class="noindent" ><img 
+src="Part 1/changed.png" alt="PIC"  
+></div>
+<!--l. 36--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">1.2   </span> <a 
+ id="x1-30001.2"></a>Bezier Surfaces with Separable 1D de Casteljau</h4>
+<!--l. 37--><p class="noindent" >We can extend toward surfaces by using <span 
+class="cmmi-10">NxN </span>control points. first, we create the
+Bezier curves for points (<span 
+class="cmmi-10">P</span><sub><span 
+class="cmmi-7">i,j</span></sub>)<sub><span 
+class="cmmi-7">j</span><span 
+class="cmr-7">=1</span></sub><sup><span 
+class="cmmi-7">N</span></sup><span 
+class="cmsy-10">&#x2200;</span><span 
+class="cmmi-10">i </span><span 
+class="cmsy-10">&#x2208; </span>[1<span 
+class="cmmi-10">,N</span>]. After we have the Bezier curves for
+some <span 
+class="cmmi-10">t</span>, we can create the second axis Bezier curve using a seperate <span 
+class="cmmi-10">u </span><span 
+class="cmsy-10">&#x2208; </span>[0<span 
+class="cmmi-10">,</span>1] with the
+points (<span 
+class="cmmi-10">P</span><sub><span 
+class="cmr-7">1</span></sub><span 
+class="cmsy-10">&#x2032;</span><span 
+class="cmmi-10">,P</span><sub><span 
+class="cmr-7">2</span></sub><span 
+class="cmsy-10">&#x2032;</span><span 
+class="cmmi-10">,...,P</span><sub><span 
+class="cmmi-7">N</span></sub><span 
+class="cmsy-10">&#x2032;</span>). This allows us to create a Bezier Surface. Below is an
+example using a Bezier Surface:
+<div class="center" 
+>
+<!--l. 38--><p class="noindent" >
+<!--l. 39--><p class="noindent" ><img 
+src="Part 2/teapot.png" alt="PIC"  
+width="36" height="36" ></div>
+<!--l. 41--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">2   </span> <a 
+ id="x1-40002"></a>Triangle Meshes and Half-Edge Data Structure</h3>
+<!--l. 42--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">2.1   </span> <a 
+ id="x1-50002.1"></a>Area Weighted Vertex Normal</h4>
+<!--l. 43--><p class="noindent" >We can use the Area Weighted Vertex Normal to do Phong shading. to do this, we
+get the area of each incident face, and taked a weighted average of the normal vectors
+of each face using the areas as weights. Iterating through each Normal is simple, but
+calculating the area of each triangle is somewhat difficult. To do this, consider
+vertices <span 
+class="cmmi-10">A,B,C </span>of each triangle. We can use <span 
+class="cmmi-10">A </span>as the origin, and calculate the
+orthogonal vector as the cross product of the two vectors (<span 
+class="cmmi-10">B </span><span 
+class="cmsy-10">- </span><span 
+class="cmmi-10">A</span>)<span 
+class="cmmi-10">X</span>(<span 
+class="cmmi-10">C </span><span 
+class="cmsy-10">- </span><span 
+class="cmmi-10">A</span>). The
+
+magnitude of the orthogonal vector will be 2x the area of the triangle, so the area of
+the triangle will be half the cross product. Below is the result of executing the
+algorithm:
+<div class="center" 
+>
+<!--l. 44--><p class="noindent" >
+<!--l. 45--><p class="noindent" ><img 
+src="Part 3/nophong.png" alt="PIC"  
+> <img 
+src="Part 3/phong.png" alt="PIC"  
+></div>
+<!--l. 48--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">2.2   </span> <a 
+ id="x1-60002.2"></a>Edge Flip</h4>
+<!--l. 49--><p class="noindent" >To implement the edge flip, I started with the mesh from spec, with vertices
+(<span 
+class="cmmi-10">a,b,c,d</span>). Next, I used the original edge (<span 
+class="cmmi-10">c,b</span>) and changed the root vertex and the
+twin root vertex. Next, I cycled starting with (a, d), and set each pointer of each half
+edge in the cycle. I.e I did (a,d)-¿(d, c)-¿(c,a) and set each attribute of the halfedges.
+I did the same thing for the twin cycle, going (d,a)-¿(a,b)-¿(b,d). Below is an example
+of edge flips:
+<div class="center" 
+>
+<!--l. 50--><p class="noindent" >
+<!--l. 51--><p class="noindent" ><img 
+src="Part 4/before.png" alt="PIC"  
+> <img 
+src="Part 4/edgeflips.png" alt="PIC"  
+></div>
+<!--l. 54--><p class="noindent" >In terms of debugging, I thought this was relatively straightforward, especially with the
+tips that were given. Things that helped me code was that I drew diagrams to help
+me.
+   <h4 class="subsectionHead"><span class="titlemark">2.3   </span> <a 
+ id="x1-70002.3"></a>Edge Split</h4>
+<!--l. 56--><p class="noindent" >Edge splitting was much more complex than edge flipping due to the amount of
+pointers. Again, I listed all pointers, but I had to create new edges, new faces, and
+new halfedges. Similar to edge flipping, I went through every cycle that was created
+from the edge splits, including the new elements, and set every attribute. There were
+4 new cyles, so I just went through each cycle and set its attributes. Below is an
+example of a few edge splits:
+<div class="center" 
+>
+<!--l. 57--><p class="noindent" >
+<!--l. 58--><p class="noindent" ><img 
+src="Part 4/before.png" alt="PIC"  
+> <img 
+src="Part 5/edgesplits.png" alt="PIC"  
+>
+</div>
+<!--l. 62--><p class="noindent" >And below is a combination of both flips and splits:
+<div class="center" 
+>
+<!--l. 63--><p class="noindent" >
+<!--l. 64--><p class="noindent" ><img 
+src="Part 5/flipsysplits.png" alt="PIC"  
+></div>
+
+<!--l. 66--><p class="noindent" >In terms of debugging, I thought this was relatively straightforward, especially with the
+tips that were given. Things that helped me code was that I drew diagrams to help
+me. <br 
+class="newline" /><br 
+class="newline" />I did not implement boundary conditions for edge splits.
+   <h4 class="subsectionHead"><span class="titlemark">2.4   </span> <a 
+ id="x1-80002.4"></a>Loop Subdivision For Mesh Upsampling</h4>
+<!--l. 71--><p class="noindent" >To implement mesh upsampling, I would go through the following steps:
+     <ol  class="enumerate1" >
+<li 
+  class="enumerate" id="x1-8002x1">
+     <!--l. 73--><p class="noindent" >Iterate through all original vertices <span 
+class="cmmi-10">v </span>in the mesh, and calculate its new
+     position. Let <span 
+class="cmmi-10">d </span>= <span 
+class="cmmi-10">deg</span>(<span 
+class="cmmi-10">v</span>), and we set <span 
+class="cmmi-10">u </span>= 3<span 
+class="cmmi-10">&#x2215;</span>16 if the degree is 3, and
+     <span 
+class="cmmi-10">u </span>= 3<span 
+class="cmmi-10">&#x2215;</span>8<span 
+class="cmmi-10">d </span>otherwise. We set the new position to be:
+<div class="math-display" >
+<img 
+src="main1x.png" alt="                               &#x2211;
+newpos(v) = (1- du)pos(v) + u          pos(v)
+                           w&#x2208;neighbors(v)
+" class="math-display" ></div>
+     </li>
+<li 
+  class="enumerate" id="x1-8004x2">
+     <!--l. 77--><p class="noindent" >Iterate through all edges in the mesh, and store the new position of the
+     created midpoint vertex when splitting the edge. This is calculated as:
+<div class="math-display" >
+<img 
+src="main2x.png" alt="newpos(m ) = 3 (A + B )+ 1(C + D)
+            8          8
+" class="math-display" ></div>
+
+     <!--l. 79--><p class="noindent" >Where <span 
+class="cmmi-10">AB </span>is the edge we split, and <span 
+class="cmmi-10">C </span>and <span 
+class="cmmi-10">D </span>are the positions of the
+     incident vertices of <span 
+class="cmmi-10">A </span>and <span 
+class="cmmi-10">B</span>. We store this new position in the edge because
+     when we split the edge and create new vertex <span 
+class="cmmi-10">m</span>, we can directly set the
+     new position of <span 
+class="cmmi-10">m </span>to be the new position of the splitted edge.
+     </li>
+<li 
+  class="enumerate" id="x1-8006x3">
+     <!--l. 81--><p class="noindent" >split all original edges of the mesh. To keep track of which edges have
+     already been split, I created an attribute isSplitted to check whether an
+     edge has been split or not. I also keep track of each edges that were original
+     inside a variable isNew.
+     </li>
+<li 
+  class="enumerate" id="x1-8008x4">
+     <!--l. 83--><p class="noindent" >Flip all edges that are new and connect a old vertex to a new vertex.
+     </li>
+<li 
+  class="enumerate" id="x1-8010x5">
+     <!--l. 85--><p class="noindent" >Set all vertex positions to the new position.</li></ol>
+<!--l. 87--><p class="noindent" >One of the tips I have is to interpret your output visually to something that can happen
+in your code. For example, one of the bugs I had was that when I upsampled, all of
+the faces would sharply move inward. I didn&#8217;t really think anything of it, and
+thought it was a problem with my flip or split. However, if I interpretted
+it visually, I would understand that the vertex position is being set to 0
+somewhere, leading me to believe it&#8217;s something to do with position setting, which
+only happens in task 6. Look at it visually to figure out where the bug is!
+<br 
+class="newline" />Lets take a look at an example output: the icosahedron:
+<div class="center" 
+>
+<!--l. 90--><p class="noindent" >
+<!--l. 91--><p class="noindent" ><img 
+src="task 6/iso1.png" alt="PIC"  
+> <img 
+src="task 6/iso2.png" alt="PIC"  
+> <img 
+src="task 6/iso3.png" alt="PIC"  
+> <img 
+src="task 6/iso4.png" alt="PIC"  
+> <img 
+src="task 6/iso5.png" alt="PIC"  
+> <img 
+src="task 6/iso6.png" alt="PIC"  
+> <img 
+src="task 6/iso7.png" alt="PIC"  
+> <img 
+src="task 6/iso8.png" alt="PIC"  
+></div>
+<!--l. 100--><p class="noindent" >We can see that the icosahedron has sharp edges. However, as we keep upsampling, the
+sharp corners are continiously smoothened untill its a ball. To keep some of the
+sharpness, we can do some presplitting on the sharp edges, specifically in this
+fashion:
+<div class="center" 
+>
+<!--l. 101--><p class="noindent" >
+<!--l. 102--><p class="noindent" ><img 
+src="task 6/sharp.png" alt="PIC"  
+></div>
+
+<!--l. 104--><p class="noindent" >upsampling it gives us, looking at the side view:
+<div class="center" 
+>
+<!--l. 105--><p class="noindent" >
+<!--l. 106--><p class="noindent" ><img 
+src="task 6/sharpround.png" alt="PIC"  
+></div>
+<!--l. 108--><p class="noindent" >This is because with more triangles, the averaging is much more accurate with the
+smoothing. With little triangles, the average is less accurate, so the triangles will
+become more concave. <br 
+class="newline" /><br 
+class="newline" />Upsampling the cube gives us:
+<div class="center" 
+>
+<!--l. 112--><p class="noindent" >
+<!--l. 113--><p class="noindent" ><img 
+src="task 6/cube1.png" alt="PIC"  
+> <img 
+src="task 6/cube2.png" alt="PIC"  
+>
+<!--l. 116--><p class="noindent" ><img 
+src="task 6/cube3.png" alt="PIC"  
+>
+<!--l. 118--><p class="noindent" ><img 
+src="task 6/cubeend.png" alt="PIC"  
+></div>
+<!--l. 120--><p class="noindent" >We can see that the cube is upsampling unevenly. This is because the original cube
+triangles are assymetrical. The triangles are set up differently on different sides of the
+cube. To fix this, split every edge on each side of the cube so that faces are
+symmetrical:
+<div class="center" 
+>
+<!--l. 121--><p class="noindent" >
+<!--l. 122--><p class="noindent" ><img 
+src="task 6/symcube.png" alt="PIC"  
+>
+<!--l. 124--><p class="noindent" ><img 
+src="task 6/symcubeend.png" alt="PIC"  
+></div>
+<!--l. 126--><p class="noindent" >This preprocessing allows for all triangles to be upsampled symmetrically, allowing for a
+symmetric shape.
+    
+</body></html> 
+
+
+
