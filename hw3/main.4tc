@@ -1,0 +1,54 @@
+\expandafter\ifx\csname doTocEntry\endcsname\relax \expandafter\endinput\fi
+\doTocEntry\tocsection{1}{\csname a:TocLink\endcsname{1}{x1-10001}{QQ2-1-1}{Ray Generation and Scene Intersection}}{3}\relax 
+\doTocEntry\tocsubsection{1.1}{\csname a:TocLink\endcsname{1}{x1-20001.1}{QQ2-1-2}{Image to World Ray Creation}}{3}\relax 
+\doTocEntry\tocsubsection{1.2}{\csname a:TocLink\endcsname{1}{x1-30001.2}{QQ2-1-3}{Ray Generation}}{4}\relax 
+\doTocEntry\tocsubsection{1.3}{\csname a:TocLink\endcsname{1}{x1-40001.3}{QQ2-1-4}{Primitive Intersection}}{4}\relax 
+\doTocEntry\tocsubsection{1.4}{\csname a:TocLink\endcsname{1}{x1-50001.4}{QQ2-1-5}{Results}}{6}\relax 
+\doTocEntry\tocsection{2}{\csname a:TocLink\endcsname{1}{x1-60002}{QQ2-1-6}{Bounding Volume Hierarchy}}{7}\relax 
+\doTocEntry\tocsubsection{2.1}{\csname a:TocLink\endcsname{1}{x1-70002.1}{QQ2-1-7}{Constructing the BVH Tree}}{7}\relax 
+\doTocEntry\tocsection{3}{\csname a:TocLink\endcsname{1}{x1-80003}{QQ2-1-8}{Direct Illumination}}{8}\relax 
+\doTocEntry\toclof{1}{\csname a:TocLink\endcsname{1}{x1-8003r1}{}{\ignorespaces f1}}{figure}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-8004}{}{\numberline {a}{\ignorespaces Uniform Hemisphere Sampling\relax }}}{14}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-8005}{}{\numberline {b}{\ignorespaces Importance Sampling\relax }}}{14}\relax 
+\doTocEntry\toclof{2}{\csname a:TocLink\endcsname{1}{x1-8008r2}{}{\ignorespaces f2}}{figure}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-8009}{}{\numberline {a}{\ignorespaces Uniform Hemisphere Sampling\relax }}}{17}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-8010}{}{\numberline {b}{\ignorespaces Importance Sampling\relax }}}{17}\relax 
+\doTocEntry\toclof{3}{\csname a:TocLink\endcsname{1}{x1-8013r3}{}{\ignorespaces f3}}{figure}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-8014}{}{\numberline {a}{\ignorespaces Uniform Hemisphere Sampling\relax }}}{20}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-8015}{}{\numberline {b}{\ignorespaces Importance Sampling\relax }}}{20}\relax 
+\doTocEntry\toclof{4}{\csname a:TocLink\endcsname{1}{x1-8018r4}{}{\ignorespaces f2}}{figure}\relax 
+\doTocEntry\tocsection{4}{\csname a:TocLink\endcsname{1}{x1-90004}{QQ2-1-19}{Global Illumination}}{22}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9001}{}{\numberline {a}{\ignorespaces Uniform Hemisphere Sampling\relax }}}{24}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9002}{}{\numberline {b}{\ignorespaces Importance Sampling\relax }}}{24}\relax 
+\doTocEntry\toclof{5}{\csname a:TocLink\endcsname{1}{x1-9005r5}{}{\ignorespaces f2}}{figure}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9006}{}{\numberline {a}{\ignorespaces Direct Lighting\relax }}}{27}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9007}{}{\numberline {b}{\ignorespaces With Indirect Lighting\relax }}}{27}\relax 
+\doTocEntry\toclof{6}{\csname a:TocLink\endcsname{1}{x1-9010r6}{}{\ignorespaces f2}}{figure}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9011}{}{\numberline {a}{\ignorespaces Direct Lighting\relax }}}{30}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9012}{}{\numberline {b}{\ignorespaces With Indirect Lighting\relax }}}{30}\relax 
+\doTocEntry\toclof{7}{\csname a:TocLink\endcsname{1}{x1-9015r7}{}{\ignorespaces f2}}{figure}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9016}{}{\numberline {a}{\ignorespaces Direct Lighting\relax }}}{33}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9017}{}{\numberline {b}{\ignorespaces Indirect Lighting\relax }}}{33}\relax 
+\doTocEntry\toclof{8}{\csname a:TocLink\endcsname{1}{x1-9020r8}{}{\ignorespaces f2}}{figure}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9021}{}{\numberline {a}{\ignorespaces Global Lighting\relax }}}{36}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9022}{}{\numberline {b}{\ignorespaces Indirect Lighting\relax }}}{36}\relax 
+\doTocEntry\toclof{9}{\csname a:TocLink\endcsname{1}{x1-9025r9}{}{\ignorespaces f2}}{figure}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9026}{}{\numberline {a}{\ignorespaces Global Lighting\relax }}}{39}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9027}{}{\numberline {b}{\ignorespaces Indirect Lighting\relax }}}{39}\relax 
+\doTocEntry\toclof{10}{\csname a:TocLink\endcsname{1}{x1-9030r10}{}{\ignorespaces f2}}{figure}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9031}{}{\numberline {a}{\ignorespaces Global Lighting\relax }}}{42}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9032}{}{\numberline {b}{\ignorespaces Indirect Lighting\relax }}}{42}\relax 
+\doTocEntry\toclof{11}{\csname a:TocLink\endcsname{1}{x1-9035r11}{}{\ignorespaces f2}}{figure}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9036}{}{\numberline {a}{\ignorespaces Global Lighting\relax }}}{45}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9037}{}{\numberline {b}{\ignorespaces Indirect Lighting\relax }}}{45}\relax 
+\doTocEntry\toclof{12}{\csname a:TocLink\endcsname{1}{x1-9040r12}{}{\ignorespaces f2}}{figure}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9041}{}{\numberline {a}{\ignorespaces Global Lighting\relax }}}{48}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-9042}{}{\numberline {b}{\ignorespaces Indirect Lighting\relax }}}{48}\relax 
+\doTocEntry\toclof{13}{\csname a:TocLink\endcsname{1}{x1-9045r13}{}{\ignorespaces f2}}{figure}\relax 
+\doTocEntry\tocsection{5}{\csname a:TocLink\endcsname{1}{x1-100005}{QQ2-1-47}{Adaptive Sampling}}{50}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-10001}{}{\numberline {a}{\ignorespaces Global Lighting\relax }}}{53}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-10002}{}{\numberline {b}{\ignorespaces Indirect Lighting\relax }}}{53}\relax 
+\doTocEntry\toclof{14}{\csname a:TocLink\endcsname{1}{x1-10005r14}{}{\ignorespaces f2}}{figure}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-10006}{}{\numberline {a}{\ignorespaces Global Lighting\relax }}}{56}\relax 
+\doTocEntry\toclof{}{\csname a:TocLink\endcsname{1}{x1-10007}{}{\numberline {b}{\ignorespaces Indirect Lighting\relax }}}{56}\relax 
+\doTocEntry\toclof{15}{\csname a:TocLink\endcsname{1}{x1-10010r15}{}{\ignorespaces f2}}{figure}\relax 

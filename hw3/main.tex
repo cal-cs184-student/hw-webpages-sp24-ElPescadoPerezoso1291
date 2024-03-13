@@ -1,0 +1,377 @@
+\documentclass{article}
+\usepackage{graphicx} % remove option for real images
+\usepackage[list=true]{subcaption}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage[section]{placeins}
+
+\title{Ray Tracing}
+\author{Michael Huang}
+\date{March 2024}
+
+\begin{document}
+
+\maketitle
+In this project, I implemented a rendered that uses a pathtracing algorithm. We go from image space to world space, build BVH trees, work with different lighting materials, and create N-bounce rays to generate scene with realistic effects of light.
+\section{Ray Generation and Scene Intersection}
+\subsection{Image to World Ray Creation}
+It all starts at the image pixels itself. To create the image, we must, in layman's terms, take a picture. More specifically, starting at image coordinates $(i, j) \in [0, 1]$, we cast a ray toward the direction of the camera. This is illustrated by the below figure:
+\begin{center}
+    \includegraphics[width=\textwidth]{Task 1/i2c.png}
+\end{center}
+We do this by first converting from image space to camera space, by doing:
+$$(x_c, y_c, z_c) = (2i\tan(\frac{hFov}{2}) - tan(\frac{hFov}{2}), 2j\tan(\frac{vFov}{2}) - \tan(\frac{vFov}{2}), -1)$$
+We then convert our camera space coordinates to world space coordinates by using the intrinsic $c2w$ matrix. We now have ray shooting from the camera into our scene to start creating our image.
+\subsection{Ray Generation}
+To generate rays for a given pixel $(x, y), x \in [0, w], y\in [0, h]$, we use a two dimensional uniform $U = [U_1, U_2], U_i \sim [0, 1]$. We then add it to our pixel coordinates $s = (x, y) + U$, and generate the ray from that position. From there, we can use that ray to sample our scene intersection and illuminance.
+\subsection{Primitive Intersection}
+One use of the ray is to check if it intersects with any primitives in the scene. If it does, then that primitive should be included as contributing to the color of the pixel. In this project, we have two different types of primitives: a triangle and a sphere.
+\\
+\\
+\textbf{Triangle Intersection}
+To check if a ray intersects with a triangle, we first define the triangle as 3 vertices $V_1, V_2, V_3$, the ray $r = w_o + tw_d$. Furthermore, recall that we can decompose a point inside a triangle in barycentric coordinates, i.e $p = \alpha V_1 + \beta V_2 + \gamma V_3$. We would like to solve for a $t$ to find the intersection between the ray and the triangle. In other words, we solve:
+$$w_o + tw_d = \alpha V_1 + \beta V_2 + \gamma V_3$$
+Since $(\alpha, \beta, \gamma)$ form a convex combination, then we can reduce the 3 variables into 2 variables $b_1, b_2$. Thus, we do:
+$$w_o + tw_d = b_1 V_1 + b_2 V_2 + (1 - b_1 - b_2) V_3$$
+This ends up being the linear equation:
+$$
+\begin{bmatrix}
+-w_d & V_2 - V_1  & V_3 - V_1 
+\end{bmatrix}
+\begin{bmatrix}
+t \\
+b_1 \\
+b_2
+\end{bmatrix}
+= w_o - V_1
+$$
+which we can solve for using matrix inverses.
+\\
+\\
+\textbf{Sphere Intersection: }Recall again that $r = w_o + tw_d$. We can define a sphere as $p : (p - c)^2 - R^2 = 0$. To solve for the intersection of the sphere, we plug in our ray point for $p$, so the equation we solve is:
+$$(w_o + tw_d - c)^2 - R^2 = 0$$
+This is simply a quadratic equation that we can solve using the quadratic formula, where:
+$$a = w_d^Tw_d$$
+$$b = 2(w_o - c)^Tw_d$$
+$$(w_o - c)^T(w_o - c) - R^2$$
+\subsection{Results}
+Below are some examples that we can render with just the intersection of primitives:
+\begin{center}
+    \includegraphics[width=\textwidth]{Task 1/CBempty.png}
+    \includegraphics[width=\textwidth]{Task 1/cow.png}
+\end{center}
+\newpage
+\section{Bounding Volume Hierarchy}
+To bound volumes in a hiearchy, we use a data structure called a BVH binary tree. This allows us to traverse the scene in a much more efficient way rather than iterating through every primitive.
+\subsection{Constructing the BVH Tree}
+We build the BVH tree recursively. Let $\texttt{construct\_bvh(node, start, end)}$ represent the function to construct the BVH tree, where $\texttt{node, start, end}$ is the input node, start of the primitives list, and end of the primitives list. Below is the algorithm:
+\begin{enumerate}
+    \item Add all primitives between \texttt{start} and \texttt{end} to the bounding box of the node.
+    \item If the number of primitives in this node is smaller than the max leaf size, return the node as a leaf.
+    \item Choose the best axis (out of $x, y, z$) to split on. In this case, my heuristic was to choose the axis with the longest length.
+    \item Partition the primitives into left and right sections. To split, I used the average of the centroids.
+    \item Using the split element from the partition denoted $\texttt{mid}$, recurse. Set the left and right element of the current node to the return value of the recursive call.
+    \item return the node
+\end{enumerate}
+Below are a few renders using the BVH tree:
+\begin{center}
+    \includegraphics[width=\textwidth]{task2/CBlucy.png}
+    \includegraphics[width=\textwidth]{task2/maxplanck.png}
+\end{center}
+Below are a few statistics to detail how much faster rendering a mesh is with and without using a BVH tree:
+\\
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+ \hline
+ \multicolumn{4}{|c|}{BVH Tree Comparisons on cow.dae} \\
+ \hline
+ &  Average \# Of Rays per Second &Average \# Of Intersections per Ray & Clock Time\\
+ \hline
+ With BVH Tree   & 4.9409 Million    &2.300919 & 0.0897s\\
+ Without BVH Tree&   0.0337 Million  & 401.648053 & 14.0073s\\
+ \hline
+\end{tabular}
+\\
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+ \hline
+ \multicolumn{4}{|c|}{BVH Tree Comparisons on beast.dae} \\
+ \hline
+ &  Average \# Of Rays per Second &Average \# Of Intersections per Ray & Clock Time\\
+ \hline
+ With BVH Tree   & 4.1165 Million    &1.672902 & 0.1099s\\
+ Without BVH Tree&   0.0015 Million  & 8532.693668 & 309.9687s\\
+ \hline
+\end{tabular}
+\\
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+ \hline
+ \multicolumn{4}{|c|}{BVH Tree Comparisons on peter.dae} \\
+ \hline
+ &  Average \# Of Rays per Second &Average \# Of Intersections per Ray & Clock Time\\
+ \hline
+ With BVH Tree   & 3.3927 Million    & 3.061643 & 0.1326s\\
+ Without BVH Tree&   0.0031 Million  & 4040.849866 & 150.6201s\\
+ \hline
+\end{tabular}
+We can see that as the number of primitives go up, the number of intersections and the amount of wall clock time increases heavily, This i sbecause the BVH tree is constructed such that you only need to do much less intersections than just iterating through every primitive. Specifically, we have $O(logN)$ vs $O(N)$
+\section{Direct Illumination}
+There are two different methods for implementing direct lighting: \textbf{Uniform Hemisphere Sampling} and \textbf{Importance Sampling}.
+\\
+\\
+The first utilizes \textbf{Uniform Hemisphere Sampling}. In this regime, we assume that the light creates a hemisphere in its illuminance, and we sample a random direction in that hemisphere. Once we sample it, we create a ray going from the intersection of the origin toward the direction of the light. If the ray intersects the light (or the converse, the light direction itersects the hit point), then we can say that sampled light direction illuminates that intersection point, or that primitive. We can then use the monte carlo integral estimate for the reflectance equation:
+$$\frac{1}{N}\sum_{i = 1}^N \frac{f(w_i \to w_o)L_i cos(\theta_i)}{p(w_i)}$$
+Where $L_i$ is the emission fro the light source, $f$ is the bidirection sampling function, and $\theta_i$ is the angle between intersection normal of the primitive and our light direction. 
+\\
+\\
+The second utilizes \textbf{Importance Sampling}. In this regime, we realize that uniform sampling will create many redundant rays that will miss the intersection of the primitive. Instead, we mainly only sample an area of light that has high probability to hit the intersection. Again, we shoot a ray starting from the intersection point, check if there are any primitives in the ray, and again do the reflectance equation. Furthermore, we no longer have to check if we intersect with the light. When we sample from the ray, for sufficient $t$ , we know we'll intersect with the light. We just need to check if we intersect with any other primitive.
+\\
+\\
+One other heuristic one should note here is the angle between the normal and the light direction. If the light direction has a component that is going toward the same direction of the normal, then the light won't illuminate the pixel. In other words, we check if the angle between $-w_i$ and $N$ is greater than 0.
+\begin{figure}[h]%
+
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task3/CBbunny_1_1_h.png}
+\caption{Uniform Hemisphere Sampling}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task3/CBbunny_1_1.png}
+\caption{Importance Sampling}
+\end{subfigure}%
+
+\caption[f1]{1 ray sample per pixel, 1 light sample per ray.}
+\end{figure}
+\\
+\begin{figure}
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task3/CBbunny_1_4_h.png}
+\caption{Uniform Hemisphere Sampling}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task3/CBbunny_1_4.png}
+\caption{Importance Sampling}
+\end{subfigure}%
+
+\caption[f2]{1 ray sample per pixel, 4 light sample per ray.}
+\end{figure}
+\begin{figure}
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task3/CBbunny_1_16_h.png}
+\caption{Uniform Hemisphere Sampling}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task3/CBbunny_1_16.png}
+\caption{Importance Sampling}
+\end{subfigure}%
+
+\caption[f3]{1 ray sample per pixel, 16 light sample per ray.}
+\end{figure}
+\begin{figure}
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task3/CBbunny_1_64_h.png}
+\caption{Uniform Hemisphere Sampling}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task3/CBbunny_1_64.png}
+\caption{Importance Sampling}
+\end{subfigure}%
+
+\caption[f2]{1 ray sample per pixel, 64 light sample per ray.}
+\end{figure}
+We can see in Hemisphere sampling, the sampling is much more inefficient as we are probably making missing a lot of samples. However for importance sampling, we know our direction is correct, and is just a matter of seeing whether there's a primitive in the ray or not. Thus, with importance sampling, we are much more efficient with our samples, and get much better images.
+\newpage
+\section{Global Illumination}
+To implement indirect lighting, we have to consider the possible bounces of a ray that could hit the primitive we consider. Let $p = w_o + tw_d$ be the point that intersects the primitive. Furthermore, let $N$ be the normal vector on the intersection. We first get the emission of light on that point from direct lighting; this was from task 3. We get indirect lighting by sampling a random direction, then shooting a ray from that direction. If there is an intersection from the hit point $p$ and the sampled direction, we get the emission from that primitive's direct lighting and indirect lighting. This is where the recursive nature of the algorithm comes from. If we do this $N$ times, we get our $N$ bounce algorithm. More mathematically, our recursive relationship is:
+$$R(p) = direct(r, i) + \frac{indirect(Ray(p, w_i), i')f(w_i \to w_o)\cos\theta_i}{p(w_i)} $$
+However, this recursion can go on infinitely. To prevent this, we can use a continuation probability that allows us to get the expected value of a pixel. I.e, we continue with probability $q$, and our new recursion is:
+$$R(p) = direct(r, i) + \frac{indirect(Ray(p, w_i), i')f(w_i \to w_o)\cos\theta_i}{qp(w_i)} $$
+Figure 5 and Figure 6 are a few examples.
+\begin{figure}[htb!]
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/dragon_direct.png}
+\caption{Direct Lighting}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/dragon.png}
+\caption{With Indirect Lighting}
+\end{subfigure}%
+
+\caption[f2]{Dragon}
+\end{figure}
+\begin{figure}[htb!]
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/wall-e_direct.png}
+\caption{Direct Lighting}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/wall-e.png}
+\caption{With Indirect Lighting}
+\end{subfigure}%
+
+\caption[f2]{Wall-e}
+\end{figure}
+We can also see the affect of direct lighting vs indirect lighting with the dragon in Figure 7. With direct lighting, we can see more of the low frequency features, but with indirect lighting, we get much more high frequency features from the light.
+\begin{figure}[htb!]
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/dragon_direct.png}
+\caption{Direct Lighting}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/dragon_indirect.png}
+\caption{Indirect Lighting}
+\end{subfigure}%
+
+\caption[f2]{Direct and Indirect Lighting of Dragon}
+\end{figure}
+Below are renderings of the bunny with indirect lighting and different number of ray bounces. 
+\begin{figure}[htb!]
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/CBbunny_global_1024_0.png}
+\caption{Global Lighting}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/CBbunny_indirect_1024_0.png}
+\caption{Indirect Lighting}
+\end{subfigure}%
+
+\caption[f2]{0 Bounce}
+\end{figure}
+\begin{figure}[htb!]
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/CBbunny_global_1024_1.png}
+\caption{Global Lighting}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/CBbunny_indirect_1024_1.png}
+\caption{Indirect Lighting}
+\end{subfigure}%
+
+\caption[f2]{1 Bounce}
+\end{figure}
+
+\begin{figure}[htb!]
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/CBbunny_global_1024_2.png}
+\caption{Global Lighting}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/CBbunny_indirect_1024_2.png}
+\caption{Indirect Lighting}
+\end{subfigure}%
+
+\caption[f2]{2 Bounces}
+\end{figure}
+
+\begin{figure}[htb!]
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/CBbunny_global_1024_3.png}
+\caption{Global Lighting}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/CBbunny_indirect_1024_3.png}
+\caption{Indirect Lighting}
+\end{subfigure}%
+
+\caption[f2]{3 Bounces}
+\end{figure}
+
+\begin{figure}[htb!]
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/CBbunny_global_1024_4.png}
+\caption{Global Lighting}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/CBbunny_indirect_1024_4.png}
+\caption{Indirect Lighting}
+\end{subfigure}%
+
+\caption[f2]{4 Bounces}
+\end{figure}
+
+\begin{figure}[htb!]
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/CBbunny_global_1024_5.png}
+\caption{Global Lighting}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task4/CBbunny_indirect_1024_5.png}
+\caption{Indirect Lighting}
+\end{subfigure}%
+
+\caption[f2]{5 Bounces}
+\end{figure}
+For figures 8, 9, 10, 11, 12, 13, in the second bounce, we can see that the indirect lighting provides more detailed lighting around the bunny,better shadows for the bunny, and actual lighting for the ceiling. In the third bounce, we can see some better lighting on the edges of the room, and better shadows for the bunny.  Furthermore, if we look at the accumulated bounces, we can see after each bounce, light can spread much more freely, with the room and shadows becoming more illuminated. 
+\\
+\\
+For Figures the  bunny figures with no comparison, we use russian-roullete which uses the expected value of the bounces rather than looping to a set N-value:
+\begin{center}
+    \includegraphics[width=\textwidth]{task4/CBbunny_global_1024_0.png}
+    \includegraphics[width=\textwidth]{task4/CBbunny_global_1024_1.png}
+    \includegraphics[width=\textwidth]{task4/CBbunny_global_1024_2.png}
+    \includegraphics[width=\textwidth]{task4/CBbunny_global_1024_3.png}
+    \includegraphics[width=\textwidth]{task4/CBbunny_global_1024_4.png}
+    \includegraphics[width=\textwidth]{task4/CBbunny_global_1024_rr_100.png}
+\end{center}
+Further below are renders of the sphere with 1, 2, 4, 8, 16, 64, and 1024 samples respectively. We can see that as we increase the samples, we can see it gets much less grainy.
+\begin{center}
+    \includegraphics[width=\textwidth]{task4/spheres_1_4.png}
+    \includegraphics[width=\textwidth]{task4/spheres_2_4.png}
+    \includegraphics[width=\textwidth]{task4/spheres_4_4.png}
+    \includegraphics[width=\textwidth]{task4/spheres_8_4.png}
+    \includegraphics[width=\textwidth]{task4/spheres_16_4.png}
+    \includegraphics[width=\textwidth]{task4/spheres_16_4.png}
+    \includegraphics[width=\textwidth]{task4/spheres_64_4.png}
+    \includegraphics[width=\textwidth]{task4/spheres_1024_4.png}
+\end{center}
+\newpage
+\section{Adaptive Sampling}
+Adaptive Sampling prevents us from making redundant ray samples when we've converged on a value for a pixel. More specifically, if we're just sampling background, and we're doing 1024 ray samples per pixel, but we've converged in 64 ray samples, then we can just return that ray sample. We do this by checking every set interval of samples:
+$$I \leq \mu maxTolerance$$
+where $$I = 1.96 \frac{\sigma}{\sqrt{n}}$$
+and $\mu$ and $\sigma$ are defined to be the mean and standard deviation respectfully. To keep track of these statistics, we can measure the statistics of the illuminance of each sampled ray, and store variables $s_1$ and $s_2$ such that:
+$$s_1 =\sum_{i = 1}^n x_i$$
+$$s_2 = \sum_{i = 1}^n x_i^2$$
+We can then get the $\mu$ and $\sigma$ by doing:
+$$\mu = \frac{s_1}{n}$$
+$$\sigma = \frac{1}{n - 1}(s_2 - \frac{s_1^2}{n})$$
+We then make this check every batch interval, since this check can be costly. Below are examples of adaptive sampling with the bunny and the sphere:
+
+\begin{figure}[htb!]
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task5/bunny2048.png}
+\caption{Global Lighting}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task5/bunny2048_rate.png}
+\caption{Indirect Lighting}
+\end{subfigure}%
+
+\caption[f2]{4 Bounces}
+\end{figure}
+
+\begin{figure}[htb!]
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task5/spheres2048.png}
+\caption{Global Lighting}
+\end{subfigure}
+\hfill\vrule\hfill
+\begin{subfigure}[h]{0.4\textwidth}
+\includegraphics[width=\textwidth]{task5/spheres2048_rate.png}
+\caption{Indirect Lighting}
+\end{subfigure}%
+
+\caption[f2]{Spheres with Adaptive Sampling}
+\end{figure}
+\end{document}

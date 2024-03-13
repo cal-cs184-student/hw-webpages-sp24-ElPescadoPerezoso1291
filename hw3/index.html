@@ -1,7 +1,1112 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Homework 3 index.html here
-	</body>
-</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>Ray Tracing</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (https://tug.org/tex4ht/)"> 
+<meta name="originator" content="TeX4ht (https://tug.org/tex4ht/)"> 
+<!-- html --> 
+<meta name="src" content="main.tex"> 
+<link rel="stylesheet" type="text/css" href="main.css"> 
+</head><body 
+>
+   <div class="maketitle">
+
+
+
+<h2 class="titleHead">Ray Tracing</h2>
+<div class="author" ><span 
+class="cmr-12">Michael Huang</span></div><br />
+<div class="date" ><span 
+class="cmr-12">March 2024</span></div>
+   </div>In this project, I implemented a rendered that uses a pathtracing algorithm. We
+go from image space to world space, build BVH trees, work with different lighting
+materials, and create N-bounce rays to generate scene with realistic effects of
+light.
+   <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-10001"></a>Ray Generation and Scene Intersection</h3>
+<!--l. 17--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">1.1   </span> <a 
+ id="x1-20001.1"></a>Image to World Ray Creation</h4>
+<!--l. 18--><p class="noindent" >It all starts at the image pixels itself. To create the image, we must, in layman&#8217;s
+terms, take a picture. More specifically, starting at image coordinates (<span 
+class="cmmi-10">i,j</span>) <span 
+class="cmsy-10">&#x2208; </span>[0<span 
+class="cmmi-10">,</span>1],
+we cast a ray toward the direction of the camera. This is illustrated by the below
+figure:
+<div class="center" 
+>
+<!--l. 19--><p class="noindent" >
+<!--l. 20--><p class="noindent" ><img 
+src="Task 1/i2c.png" alt="PIC"  
+width="345" height="345" ></div>
+<!--l. 22--><p class="noindent" >We do this by first converting from image space to camera space, by doing:
+   <div class="math-display" >
+<img 
+src="main0x.png" alt="(xc,yc,zc) = (2itan(hF-ov)- tan (hFov),2jtan(vFov) - tan(vF-ov),- 1)
+                   2          2            2          2
+" class="math-display" ></div>
+<!--l. 24--><p class="indent" >   We then convert our camera space coordinates to world space coordinates by
+using the intrinsic <span 
+class="cmmi-10">c</span>2<span 
+class="cmmi-10">w </span>matrix. We now have ray shooting from the camera into our
+scene to start creating our image.
+   <h4 class="subsectionHead"><span class="titlemark">1.2   </span> <a 
+ id="x1-30001.2"></a>Ray Generation</h4>
+<!--l. 26--><p class="noindent" >To generate rays for a given pixel (<span 
+class="cmmi-10">x,y</span>)<span 
+class="cmmi-10">,x </span><span 
+class="cmsy-10">&#x2208; </span>[0<span 
+class="cmmi-10">,w</span>]<span 
+class="cmmi-10">,y </span><span 
+class="cmsy-10">&#x2208; </span>[0<span 
+class="cmmi-10">,h</span>], we use a two
+dimensional uniform <span 
+class="cmmi-10">U </span>= [<span 
+class="cmmi-10">U</span><sub><span 
+class="cmr-7">1</span></sub><span 
+class="cmmi-10">,U</span><sub><span 
+class="cmr-7">2</span></sub>]<span 
+class="cmmi-10">,U</span><sub><span 
+class="cmmi-7">i</span></sub> <span 
+class="cmsy-10">~ </span>[0<span 
+class="cmmi-10">,</span>1]. We then add it to our pixel
+coordinates <span 
+class="cmmi-10">s </span>= (<span 
+class="cmmi-10">x,y</span>) + <span 
+class="cmmi-10">U</span>, and generate the ray from that position. From there, we
+can use that ray to sample our scene intersection and illuminance.
+   <h4 class="subsectionHead"><span class="titlemark">1.3   </span> <a 
+ id="x1-40001.3"></a>Primitive Intersection</h4>
+<!--l. 28--><p class="noindent" >One use of the ray is to check if it intersects with any primitives in the scene. If it
+does, then that primitive should be included as contributing to the color of the pixel.
+In this project, we have two different types of primitives: a triangle and a sphere.
+<br 
+class="newline" /><br 
+class="newline" /><span 
+class="cmbx-10">Triangle Intersection </span>To check if a ray intersects with a triangle, we first define
+the triangle as 3 vertices <span 
+class="cmmi-10">V</span> <sub><span 
+class="cmr-7">1</span></sub><span 
+class="cmmi-10">,V</span> <sub><span 
+class="cmr-7">2</span></sub><span 
+class="cmmi-10">,V</span> <sub><span 
+class="cmr-7">3</span></sub>, the ray <span 
+class="cmmi-10">r </span>= <span 
+class="cmmi-10">w</span><sub><span 
+class="cmmi-7">o</span></sub> + <span 
+class="cmmi-10">tw</span><sub><span 
+class="cmmi-7">d</span></sub>. Furthermore, recall that
+we can decompose a point inside a triangle in barycentric coordinates, i.e
+<span 
+class="cmmi-10">p </span>= <span 
+class="cmmi-10">&#x03B1;V</span> <sub><span 
+class="cmr-7">1</span></sub> + <span 
+class="cmmi-10">&#x03B2;V</span> <sub><span 
+class="cmr-7">2</span></sub> + <span 
+class="cmmi-10">&#x03B3;V</span> <sub><span 
+class="cmr-7">3</span></sub>. We would like to solve for a <span 
+class="cmmi-10">t </span>to find the intersection between
+the ray and the triangle. In other words, we solve:
+   <div class="math-display" >
+<img 
+src="main1x.png" alt="w + tw  = &#x03B1;V + &#x03B2;V  + &#x03B3;V
+ o    d     1    2     3
+" class="math-display" ></div>
+<!--l. 34--><p class="indent" >   Since (<span 
+class="cmmi-10">&#x03B1;,&#x03B2;,&#x03B3;</span>) form a convex combination, then we can reduce the 3 variables into
+2 variables <span 
+class="cmmi-10">b</span><sub><span 
+class="cmr-7">1</span></sub><span 
+class="cmmi-10">,b</span><sub><span 
+class="cmr-7">2</span></sub>. Thus, we do:
+
+   <div class="math-display" >
+<img 
+src="main2x.png" alt="wo + twd = b1V1 +b2V2 +(1 - b1 - b2)V3
+" class="math-display" ></div>
+<!--l. 36--><p class="indent" >   This ends up being the linear equation:
+   <div class="math-display" >
+<img 
+src="main3x.png" alt="                      &#x230A; t&#x230B;
+[- wd V2 - V1  V3 - V1]&#x2308;b1&#x2309; = wo - V1
+                       b2
+" class="math-display" ></div>
+<!--l. 48--><p class="indent" >   which we can solve for using matrix inverses. <br 
+class="newline" /><br 
+class="newline" /><span 
+class="cmbx-10">Sphere Intersection: </span>Recall again that <span 
+class="cmmi-10">r </span>= <span 
+class="cmmi-10">w</span><sub><span 
+class="cmmi-7">o</span></sub> + <span 
+class="cmmi-10">tw</span><sub><span 
+class="cmmi-7">d</span></sub>. We can define a sphere as
+<span 
+class="cmmi-10">p </span>: (<span 
+class="cmmi-10">p </span><span 
+class="cmsy-10">- </span><span 
+class="cmmi-10">c</span>)<sup><span 
+class="cmr-7">2</span></sup> <span 
+class="cmsy-10">- </span><span 
+class="cmmi-10">R</span><sup><span 
+class="cmr-7">2</span></sup> = 0. To solve for the intersection of the sphere, we plug in our ray
+point for <span 
+class="cmmi-10">p</span>, so the equation we solve is:
+   <div class="math-display" >
+<img 
+src="main4x.png" alt="(wo + twd - c)2 - R2 = 0
+" class="math-display" ></div>
+<!--l. 53--><p class="indent" >   This is simply a quadratic equation that we can solve using the quadratic
+formula, where:
+
+   <div class="math-display" >
+<img 
+src="main5x.png" alt="     T
+a = wd wd
+" class="math-display" ></div>
+<!--l. 55--><p class="indent" >
+   <div class="math-display" >
+<img 
+src="main6x.png" alt="           T
+b = 2(wo - c) wd
+" class="math-display" ></div>
+<!--l. 56--><p class="indent" >
+   <div class="math-display" >
+<img 
+src="main7x.png" alt="(wo - c)T(wo - c)- R2
+" class="math-display" ></div>
+<!--l. 57--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">1.4   </span> <a 
+ id="x1-50001.4"></a>Results</h4>
+<!--l. 58--><p class="noindent" >Below are some examples that we can render with just the intersection of
+primitives:
+<div class="center" 
+>
+<!--l. 59--><p class="noindent" >
+<!--l. 60--><p class="noindent" ><img 
+src="Task 1/CBempty.png" alt="PIC"  
+width="345" height="345" > <img 
+src="Task 1/cow.png" alt="PIC"  
+width="345" height="345" ></div>
+<!--l. 63--><p class="noindent" >
+
+   <h3 class="sectionHead"><span class="titlemark">2   </span> <a 
+ id="x1-60002"></a>Bounding Volume Hierarchy</h3>
+<!--l. 65--><p class="noindent" >To bound volumes in a hiearchy, we use a data structure called a BVH binary tree.
+This allows us to traverse the scene in a much more efficient way rather than
+iterating through every primitive.
+   <h4 class="subsectionHead"><span class="titlemark">2.1   </span> <a 
+ id="x1-70002.1"></a>Constructing the BVH Tree</h4>
+<!--l. 67--><p class="noindent" >We build the BVH tree recursively. Let <span 
+class="cmtt-10">construct</span><span 
+class="cmtt-10">_bvh(node, start, end)</span>
+represent the function to construct the BVH tree, where <span 
+class="cmtt-10">node, start, end</span> is the
+input node, start of the primitives list, and end of the primitives list. Below is the
+algorithm:
+     <ol  class="enumerate1" >
+<li 
+  class="enumerate" id="x1-7002x1">
+     <!--l. 69--><p class="noindent" >Add all primitives between <span 
+class="cmtt-10">start </span>and <span 
+class="cmtt-10">end </span>to the bounding box of the
+     node.
+     </li>
+<li 
+  class="enumerate" id="x1-7004x2">
+     <!--l. 70--><p class="noindent" >If the number of primitives in this node is smaller than the max leaf size,
+     return the node as a leaf.
+     </li>
+<li 
+  class="enumerate" id="x1-7006x3">
+     <!--l. 71--><p class="noindent" >Choose the best axis (out of <span 
+class="cmmi-10">x,y,z</span>) to split on. In this case, my heuristic
+     was to choose the axis with the longest length.
+     </li>
+<li 
+  class="enumerate" id="x1-7008x4">
+     <!--l. 72--><p class="noindent" >Partition the primitives into left and right sections. To split, I used the
+     average of the centroids.
+     </li>
+<li 
+  class="enumerate" id="x1-7010x5">
+     <!--l. 73--><p class="noindent" >Using the split element from the partition denoted <span 
+class="cmtt-10">mid</span>, recurse. Set the left
+     and right element of the current node to the return value of the recursive
+     call.
+     </li>
+
+<li 
+  class="enumerate" id="x1-7012x6">
+     <!--l. 74--><p class="noindent" >return the node</li></ol>
+<!--l. 76--><p class="noindent" >Below are a few renders using the BVH tree:
+<div class="center" 
+>
+<!--l. 77--><p class="noindent" >
+<!--l. 78--><p class="noindent" ><img 
+src="task2/CBlucy.png" alt="PIC"  
+width="345" height="345" > <img 
+src="task2/maxplanck.png" alt="PIC"  
+width="345" height="345" ></div>
+<!--l. 81--><p class="noindent" >Below are a few statistics to detail how much faster rendering a mesh is with and
+without using a BVH tree: <br 
+class="newline" /><!--tex4ht:inline--><div class="tabular"> <table id="TBL-2" class="tabular" 
+ 
+><colgroup id="TBL-2-1g"><col 
+id="TBL-2-1"></colgroup><colgroup id="TBL-2-2g"><col 
+id="TBL-2-2"></colgroup><colgroup id="TBL-2-3g"><col 
+id="TBL-2-3"></colgroup><colgroup id="TBL-2-4g"><col 
+id="TBL-2-4"></colgroup><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-1-"><td colspan="4" style="white-space:nowrap; text-align:center;" id="TBL-2-1-1"  
+class="td11">                    <div class="multicolumn"  style="white-space:nowrap; text-align:center;">BVH Tree Comparisons on cow.dae</div>                                
+</td></tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-2-"><td  style="white-space:normal; text-align:left;" id="TBL-2-2-1"  
+class="td11"><!--l. 87--><p class="noindent" >                </td><td  style="white-space:normal; text-align:left;" id="TBL-2-2-2"  
+class="td11"><!--l. 87--><p class="noindent" >Average # Of Rays
+per Second           </td><td  style="white-space:normal; text-align:left;" id="TBL-2-2-3"  
+class="td11"><!--l. 87--><p class="noindent" >Average             #
+Of Intersections per
+Ray                    </td><td  style="white-space:normal; text-align:left;" id="TBL-2-2-4"  
+class="td11"><!--l. 87--><p class="noindent" >Clock Time          </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-3-"><td  style="white-space:normal; text-align:left;" id="TBL-2-3-1"  
+class="td11"><!--l. 89--><p class="noindent" >With BVH Tree    </td><td  style="white-space:normal; text-align:left;" id="TBL-2-3-2"  
+class="td11"><!--l. 89--><p class="noindent" >4.9409 Million       </td><td  style="white-space:normal; text-align:left;" id="TBL-2-3-3"  
+class="td11"><!--l. 89--><p class="noindent" >2.300919              </td><td  style="white-space:normal; text-align:left;" id="TBL-2-3-4"  
+class="td11"><!--l. 89--><p class="noindent" >0.0897s                </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-4-"><td  style="white-space:normal; text-align:left;" id="TBL-2-4-1"  
+class="td11"><!--l. 90--><p class="noindent" >Without BVH Tree</td><td  style="white-space:normal; text-align:left;" id="TBL-2-4-2"  
+class="td11"><!--l. 90--><p class="noindent" >0.0337 Million       </td><td  style="white-space:normal; text-align:left;" id="TBL-2-4-3"  
+class="td11"><!--l. 90--><p class="noindent" >401.648053           </td><td  style="white-space:normal; text-align:left;" id="TBL-2-4-4"  
+class="td11"><!--l. 90--><p class="noindent" >14.0073s               </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-5-"><td  style="white-space:normal; text-align:left;" id="TBL-2-5-1"  
+class="td11">                </td></tr></table>                                                       </div>
+<br 
+class="newline" /><!--tex4ht:inline--><div class="tabular"> <table id="TBL-3" class="tabular" 
+ 
+><colgroup id="TBL-3-1g"><col 
+id="TBL-3-1"></colgroup><colgroup id="TBL-3-2g"><col 
+id="TBL-3-2"></colgroup><colgroup id="TBL-3-3g"><col 
+id="TBL-3-3"></colgroup><colgroup id="TBL-3-4g"><col 
+id="TBL-3-4"></colgroup><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-1-"><td colspan="4" style="white-space:nowrap; text-align:center;" id="TBL-3-1-1"  
+class="td11">                    <div class="multicolumn"  style="white-space:nowrap; text-align:center;">BVH Tree Comparisons on beast.dae</div>                               
+</td></tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-2-"><td  style="white-space:normal; text-align:left;" id="TBL-3-2-1"  
+class="td11"><!--l. 98--><p class="noindent" >                </td><td  style="white-space:normal; text-align:left;" id="TBL-3-2-2"  
+class="td11"><!--l. 98--><p class="noindent" >Average # Of Rays
+per Second           </td><td  style="white-space:normal; text-align:left;" id="TBL-3-2-3"  
+class="td11"><!--l. 98--><p class="noindent" >Average             #
+Of Intersections per
+Ray                    </td><td  style="white-space:normal; text-align:left;" id="TBL-3-2-4"  
+class="td11"><!--l. 98--><p class="noindent" >Clock Time          </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-3-"><td  style="white-space:normal; text-align:left;" id="TBL-3-3-1"  
+class="td11"><!--l. 100--><p class="noindent" >With BVH Tree    </td><td  style="white-space:normal; text-align:left;" id="TBL-3-3-2"  
+class="td11"><!--l. 100--><p class="noindent" >4.1165 Million       </td><td  style="white-space:normal; text-align:left;" id="TBL-3-3-3"  
+class="td11"><!--l. 100--><p class="noindent" >1.672902              </td><td  style="white-space:normal; text-align:left;" id="TBL-3-3-4"  
+class="td11"><!--l. 100--><p class="noindent" >0.1099s                </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-4-"><td  style="white-space:normal; text-align:left;" id="TBL-3-4-1"  
+class="td11"><!--l. 101--><p class="noindent" >Without BVH Tree</td><td  style="white-space:normal; text-align:left;" id="TBL-3-4-2"  
+class="td11"><!--l. 101--><p class="noindent" >0.0015 Million       </td><td  style="white-space:normal; text-align:left;" id="TBL-3-4-3"  
+class="td11"><!--l. 101--><p class="noindent" >8532.693668          </td><td  style="white-space:normal; text-align:left;" id="TBL-3-4-4"  
+class="td11"><!--l. 101--><p class="noindent" >309.9687s             </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-5-"><td  style="white-space:normal; text-align:left;" id="TBL-3-5-1"  
+class="td11">                </td></tr></table>                                                       </div>
+<br 
+class="newline" /><!--tex4ht:inline--><div class="tabular"> <table id="TBL-4" class="tabular" 
+ 
+><colgroup id="TBL-4-1g"><col 
+id="TBL-4-1"></colgroup><colgroup id="TBL-4-2g"><col 
+id="TBL-4-2"></colgroup><colgroup id="TBL-4-3g"><col 
+id="TBL-4-3"></colgroup><colgroup id="TBL-4-4g"><col 
+id="TBL-4-4"></colgroup><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-1-"><td colspan="4" style="white-space:nowrap; text-align:center;" id="TBL-4-1-1"  
+class="td11">                    <div class="multicolumn"  style="white-space:nowrap; text-align:center;">BVH Tree Comparisons on peter.dae</div>                               
+</td></tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-2-"><td  style="white-space:normal; text-align:left;" id="TBL-4-2-1"  
+class="td11"><!--l. 109--><p class="noindent" >                </td><td  style="white-space:normal; text-align:left;" id="TBL-4-2-2"  
+class="td11"><!--l. 109--><p class="noindent" >Average # Of Rays
+per Second           </td><td  style="white-space:normal; text-align:left;" id="TBL-4-2-3"  
+class="td11"><!--l. 109--><p class="noindent" >Average             #
+Of Intersections per
+Ray                    </td><td  style="white-space:normal; text-align:left;" id="TBL-4-2-4"  
+class="td11"><!--l. 109--><p class="noindent" >Clock Time          </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-3-"><td  style="white-space:normal; text-align:left;" id="TBL-4-3-1"  
+class="td11"><!--l. 111--><p class="noindent" >With BVH Tree    </td><td  style="white-space:normal; text-align:left;" id="TBL-4-3-2"  
+class="td11"><!--l. 111--><p class="noindent" >3.3927 Million       </td><td  style="white-space:normal; text-align:left;" id="TBL-4-3-3"  
+class="td11"><!--l. 111--><p class="noindent" >3.061643              </td><td  style="white-space:normal; text-align:left;" id="TBL-4-3-4"  
+class="td11"><!--l. 111--><p class="noindent" >0.1326s                </td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-4-"><td  style="white-space:normal; text-align:left;" id="TBL-4-4-1"  
+class="td11"><!--l. 112--><p class="noindent" >Without BVH Tree</td><td  style="white-space:normal; text-align:left;" id="TBL-4-4-2"  
+class="td11"><!--l. 112--><p class="noindent" >0.0031 Million       </td><td  style="white-space:normal; text-align:left;" id="TBL-4-4-3"  
+class="td11"><!--l. 112--><p class="noindent" >4040.849866          </td><td  style="white-space:normal; text-align:left;" id="TBL-4-4-4"  
+class="td11"><!--l. 112--><p class="noindent" >150.6201s             </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-5-"><td  style="white-space:normal; text-align:left;" id="TBL-4-5-1"  
+class="td11">                </td></tr></table>                                                       </div>
+We can see that as the number of primitives go up, the number of intersections and
+the amount of wall clock time increases heavily, This i sbecause the BVH
+tree is constructed such that you only need to do much less intersections
+than just iterating through every primitive. Specifically, we have <span 
+class="cmmi-10">O</span>(<span 
+class="cmmi-10">logN</span>) vs
+<span 
+class="cmmi-10">O</span>(<span 
+class="cmmi-10">N</span>)
+<!--l. 116--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">3   </span> <a 
+ id="x1-80003"></a>Direct Illumination</h3>
+<!--l. 117--><p class="noindent" >There are two different methods for implementing direct lighting: <span 
+class="cmbx-10">Uniform</span>
+<span 
+class="cmbx-10">Hemisphere Sampling </span>and <span 
+class="cmbx-10">Importance Sampling</span>. <br 
+class="newline" /><br 
+class="newline" />The first utilizes <span 
+class="cmbx-10">Uniform Hemisphere Sampling</span>. In this regime, we assume that
+the light creates a hemisphere in its illuminance, and we sample a random direction
+in that hemisphere. Once we sample it, we create a ray going from the intersection of
+the origin toward the direction of the light. If the ray intersects the light
+(or the converse, the light direction itersects the hit point), then we can
+say that sampled light direction illuminates that intersection point, or that
+
+primitive. We can then use the monte carlo integral estimate for the reflectance
+equation:
+   <div class="math-display" >
+<img 
+src="main8x.png" alt=" 1&#x2211;N  f(wi &#x2192; wo)Licos(&#x03B8;i)
+N-    ------p(w-)-------
+   i=1          i
+" class="math-display" ></div>
+<!--l. 122--><p class="indent" >   Where <span 
+class="cmmi-10">L</span><sub><span 
+class="cmmi-7">i</span></sub> is the emission fro the light source, <span 
+class="cmmi-10">f </span>is the bidirection sampling
+function, and <span 
+class="cmmi-10">&#x03B8;</span><sub><span 
+class="cmmi-7">i</span></sub> is the angle between intersection normal of the primitive and our
+light direction. <br 
+class="newline" /><br 
+class="newline" />The second utilizes <span 
+class="cmbx-10">Importance Sampling</span>. In this regime, we realize that uniform
+sampling will create many redundant rays that will miss the intersection of the
+primitive. Instead, we mainly only sample an area of light that has high probability
+to hit the intersection. Again, we shoot a ray starting from the intersection point,
+check if there are any primitives in the ray, and again do the reflectance
+equation. Furthermore, we no longer have to check if we intersect with the light.
+When we sample from the ray, for sufficient <span 
+class="cmmi-10">t </span>, we know we&#8217;ll intersect with
+the light. We just need to check if we intersect with any other primitive.
+<br 
+class="newline" /><br 
+class="newline" />One other heuristic one should note here is the angle between the normal and the
+light direction. If the light direction has a component that is going toward the
+same direction of the normal, then the light won&#8217;t illuminate the pixel. In
+other words, we check if the angle between <span 
+class="cmsy-10">-</span><span 
+class="cmmi-10">w</span><sub><span 
+class="cmmi-7">i</span></sub> and <span 
+class="cmmi-10">N </span>is greater than 0.
+<hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 131--><p class="noindent" ><!--l. 132--><p class="noindent" ><img 
+src="task3/CBbunny_1_1_h.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-8001r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Uniform Hemisphere Sampling</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 136--><p class="noindent" ><!--l. 137--><p class="noindent" ><img 
+src="task3/CBbunny_1_1.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-8002r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">Importance Sampling</span>
+</span></div>                          </div>
+<a 
+ id="x1-8003r1"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;1: </span><span  
+class="content">1 ray sample per pixel, 1 light sample per ray.
+</span></div>
+
+<!--l. 142--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 144--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 145--><p class="noindent" ><a 
+ id="x1-8004"></a>
+<a 
+ id="x1-8005"></a>
+<!--l. 146--><p class="noindent" ><img 
+src="task3/CBbunny_1_4_h.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-8006r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Uniform Hemisphere Sampling</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 150--><p class="noindent" ><!--l. 151--><p class="noindent" ><img 
+src="task3/CBbunny_1_4.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-8007r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">Importance Sampling</span>
+</span></div>                          </div>
+<a 
+ id="x1-8008r2"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;2: </span><span  
+class="content">1 ray sample per pixel, 4 light sample per ray.
+</span></div>
+
+<!--l. 156--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 157--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 158--><p class="noindent" ><a 
+ id="x1-8009"></a>
+<a 
+ id="x1-8010"></a>
+<!--l. 159--><p class="noindent" ><img 
+src="task3/CBbunny_1_16_h.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-8011r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Uniform Hemisphere Sampling</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 163--><p class="noindent" ><!--l. 164--><p class="noindent" ><img 
+src="task3/CBbunny_1_16.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-8012r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">Importance Sampling</span>
+</span></div>                          </div>
+<a 
+ id="x1-8013r3"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;3: </span><span  
+class="content">1 ray sample per pixel, 16 light sample per ray.
+</span></div>
+
+<!--l. 169--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 170--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 171--><p class="noindent" ><a 
+ id="x1-8014"></a>
+<a 
+ id="x1-8015"></a>
+<!--l. 172--><p class="noindent" ><img 
+src="task3/CBbunny_1_64_h.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-8016r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Uniform Hemisphere Sampling</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 176--><p class="noindent" ><!--l. 177--><p class="noindent" ><img 
+src="task3/CBbunny_1_64.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-8017r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">Importance Sampling</span>
+</span></div>                          </div>
+<a 
+ id="x1-8018r4"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;4: </span><span  
+class="content">1 ray sample per pixel, 64 light sample per ray.
+</span></div>
+
+<!--l. 182--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 183--><p class="indent" >   We can see in Hemisphere sampling, the sampling is much more inefficient as we
+are probably making missing a lot of samples. However for importance sampling, we
+know our direction is correct, and is just a matter of seeing whether there&#8217;s a
+primitive in the ray or not. Thus, with importance sampling, we are much more
+efficient with our samples, and get much better images.
+
+   <h3 class="sectionHead"><span class="titlemark">4   </span> <a 
+ id="x1-90004"></a>Global Illumination</h3>
+<!--l. 186--><p class="noindent" >To implement indirect lighting, we have to consider the possible bounces of
+a ray that could hit the primitive we consider. Let <span 
+class="cmmi-10">p </span>= <span 
+class="cmmi-10">w</span><sub><span 
+class="cmmi-7">o</span></sub> + <span 
+class="cmmi-10">tw</span><sub><span 
+class="cmmi-7">d</span></sub> be the
+point that intersects the primitive. Furthermore, let <span 
+class="cmmi-10">N </span>be the normal vector
+on the intersection. We first get the emission of light on that point from
+direct lighting; this was from task 3. We get indirect lighting by sampling a
+random direction, then shooting a ray from that direction. If there is an
+intersection from the hit point <span 
+class="cmmi-10">p </span>and the sampled direction, we get the emission
+from that primitive&#8217;s direct lighting and indirect lighting. This is where the
+recursive nature of the algorithm comes from. If we do this <span 
+class="cmmi-10">N </span>times, we get
+our <span 
+class="cmmi-10">N </span>bounce algorithm. More mathematically, our recursive relationship
+is:
+   <div class="math-display" >
+<img 
+src="main9x.png" alt="                  indirect(Ray-(p,wi),i&#x2032;)f(wi &#x2192;-wo-)cos&#x03B8;i
+R(p) = direct(r,i)+               p(wi)
+" class="math-display" ></div>
+<!--l. 188--><p class="indent" >   However, this recursion can go on infinitely. To prevent this, we can use a
+continuation probability that allows us to get the expected value of a pixel. I.e, we
+continue with probability <span 
+class="cmmi-10">q</span>, and our new recursion is:
+   <div class="math-display" >
+<img 
+src="main10x.png" alt="                                   &#x2032;
+R(p) = direct(r,i)+ indirect(Ray-(p,wi),i)f(wi &#x2192;-wo-)cos&#x03B8;i
+                                qp(wi)
+" class="math-display" ></div>
+<!--l. 190--><p class="indent" >   Figure 5 and Figure 6 are a few examples. <hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 192--><p class="noindent" ><a 
+ id="x1-9001"></a>
+<a 
+ id="x1-9002"></a>
+<!--l. 193--><p class="noindent" ><img 
+src="task4/dragon_direct.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9003r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Direct Lighting</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 197--><p class="noindent" ><!--l. 198--><p class="noindent" ><img 
+src="task4/dragon.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9004r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">With Indirect Lighting</span>
+</span></div>                          </div>
+<a 
+ id="x1-9005r5"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;5: </span><span  
+class="content">Dragon
+</span></div>
+
+<!--l. 203--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 204--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 205--><p class="noindent" ><a 
+ id="x1-9006"></a>
+<a 
+ id="x1-9007"></a>
+<!--l. 206--><p class="noindent" ><img 
+src="task4/wall-e_direct.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9008r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Direct Lighting</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 210--><p class="noindent" ><!--l. 211--><p class="noindent" ><img 
+src="task4/wall-e.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9009r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">With Indirect Lighting</span>
+</span></div>                          </div>
+<a 
+ id="x1-9010r6"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;6: </span><span  
+class="content">Wall-e
+</span></div>
+
+<!--l. 216--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 217--><p class="indent" >   We can also see the affect of direct lighting vs indirect lighting with the dragon in
+Figure 7. With direct lighting, we can see more of the low frequency features, but
+with indirect lighting, we get much more high frequency features from the light.
+<hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 219--><p class="noindent" ><a 
+ id="x1-9011"></a>
+<a 
+ id="x1-9012"></a>
+<!--l. 220--><p class="noindent" ><img 
+src="task4/dragon_direct.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9013r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Direct Lighting</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 224--><p class="noindent" ><!--l. 225--><p class="noindent" ><img 
+src="task4/dragon_indirect.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9014r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">Indirect Lighting</span>
+</span></div>                          </div>
+<a 
+ id="x1-9015r7"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;7: </span><span  
+class="content">Direct and Indirect Lighting of Dragon
+</span></div>
+
+<!--l. 230--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 231--><p class="indent" >   Below are renderings of the bunny with indirect lighting and different number of
+ray bounces. <hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 233--><p class="noindent" ><a 
+ id="x1-9016"></a>
+<a 
+ id="x1-9017"></a>
+<!--l. 234--><p class="noindent" ><img 
+src="task4/CBbunny_global_1024_0.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9018r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Global Lighting</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 238--><p class="noindent" ><!--l. 239--><p class="noindent" ><img 
+src="task4/CBbunny_indirect_1024_0.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9019r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">Indirect Lighting</span>
+</span></div>                          </div>
+<a 
+ id="x1-9020r8"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;8: </span><span  
+class="content">0 Bounce
+</span></div>
+
+<!--l. 244--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 245--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 246--><p class="noindent" ><a 
+ id="x1-9021"></a>
+<a 
+ id="x1-9022"></a>
+<!--l. 247--><p class="noindent" ><img 
+src="task4/CBbunny_global_1024_1.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9023r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Global Lighting</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 251--><p class="noindent" ><!--l. 252--><p class="noindent" ><img 
+src="task4/CBbunny_indirect_1024_1.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9024r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">Indirect Lighting</span>
+</span></div>                          </div>
+<a 
+ id="x1-9025r9"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;9: </span><span  
+class="content">1 Bounce
+</span></div>
+
+<!--l. 257--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 259--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 260--><p class="noindent" ><a 
+ id="x1-9026"></a>
+<a 
+ id="x1-9027"></a>
+<!--l. 261--><p class="noindent" ><img 
+src="task4/CBbunny_global_1024_2.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9028r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Global Lighting</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 265--><p class="noindent" ><!--l. 266--><p class="noindent" ><img 
+src="task4/CBbunny_indirect_1024_2.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9029r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">Indirect Lighting</span>
+</span></div>                          </div>
+<a 
+ id="x1-9030r10"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;10: </span><span  
+class="content">2 Bounces
+</span></div>
+
+<!--l. 271--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 273--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 274--><p class="noindent" ><a 
+ id="x1-9031"></a>
+<a 
+ id="x1-9032"></a>
+<!--l. 275--><p class="noindent" ><img 
+src="task4/CBbunny_global_1024_3.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9033r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Global Lighting</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 279--><p class="noindent" ><!--l. 280--><p class="noindent" ><img 
+src="task4/CBbunny_indirect_1024_3.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9034r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">Indirect Lighting</span>
+</span></div>                          </div>
+<a 
+ id="x1-9035r11"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;11: </span><span  
+class="content">3 Bounces
+</span></div>
+
+<!--l. 285--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 287--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 288--><p class="noindent" ><a 
+ id="x1-9036"></a>
+<a 
+ id="x1-9037"></a>
+<!--l. 289--><p class="noindent" ><img 
+src="task4/CBbunny_global_1024_4.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9038r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Global Lighting</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 293--><p class="noindent" ><!--l. 294--><p class="noindent" ><img 
+src="task4/CBbunny_indirect_1024_4.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9039r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">Indirect Lighting</span>
+</span></div>                          </div>
+<a 
+ id="x1-9040r12"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;12: </span><span  
+class="content">4 Bounces
+</span></div>
+
+<!--l. 299--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 301--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 302--><p class="noindent" ><a 
+ id="x1-9041"></a>
+<a 
+ id="x1-9042"></a>
+<!--l. 303--><p class="noindent" ><img 
+src="task4/CBbunny_global_1024_5.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9043r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Global Lighting</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 307--><p class="noindent" ><!--l. 308--><p class="noindent" ><img 
+src="task4/CBbunny_indirect_1024_5.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-9044r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">Indirect Lighting</span>
+</span></div>                          </div>
+<a 
+ id="x1-9045r13"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;13: </span><span  
+class="content">5 Bounces
+</span></div>
+
+<!--l. 313--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 314--><p class="indent" >   For figures 8, 9, 10, 11, 12, 13, in the second bounce, we can see that the indirect
+lighting provides more detailed lighting around the bunny,better shadows for the
+bunny, and actual lighting for the ceiling. In the third bounce, we can see some better
+lighting on the edges of the room, and better shadows for the bunny. Furthermore, if
+we look at the accumulated bounces, we can see after each bounce, light can spread
+much more freely, with the room and shadows becoming more illuminated.
+<br 
+class="newline" /><br 
+class="newline" />For Figures the bunny figures with no comparison, we use russian-roullete
+which uses the expected value of the bounces rather than looping to a set
+N-value:
+<div class="center" 
+>
+<!--l. 318--><p class="noindent" >
+<!--l. 319--><p class="noindent" ><img 
+src="task4/CBbunny_global_1024_0.png" alt="PIC"  
+width="345" height="345" > <img 
+src="task4/CBbunny_global_1024_1.png" alt="PIC"  
+width="345" height="345" > <img 
+src="task4/CBbunny_global_1024_2.png" alt="PIC"  
+width="345" height="345" > <img 
+src="task4/CBbunny_global_1024_3.png" alt="PIC"  
+width="345" height="345" > <img 
+src="task4/CBbunny_global_1024_4.png" alt="PIC"  
+width="345" height="345" > <img 
+src="task4/CBbunny_global_1024_rr_100.png" alt="PIC"  
+width="345" height="345" ></div>
+<!--l. 326--><p class="noindent" >Further below are renders of the sphere with 1, 2, 4, 8, 16, 64, and 1024 samples
+respectively. We can see that as we increase the samples, we can see it gets much less
+grainy.
+<div class="center" 
+>
+<!--l. 327--><p class="noindent" >
+<!--l. 328--><p class="noindent" ><img 
+src="task4/spheres_1_4.png" alt="PIC"  
+width="345" height="345" > <img 
+src="task4/spheres_2_4.png" alt="PIC"  
+width="345" height="345" > <img 
+src="task4/spheres_4_4.png" alt="PIC"  
+width="345" height="345" > <img 
+src="task4/spheres_8_4.png" alt="PIC"  
+width="345" height="345" > <img 
+src="task4/spheres_16_4.png" alt="PIC"  
+width="345" height="345" > <img 
+src="task4/spheres_16_4.png" alt="PIC"  
+width="345" height="345" > <img 
+src="task4/spheres_64_4.png" alt="PIC"  
+width="345" height="345" > <img 
+src="task4/spheres_1024_4.png" alt="PIC"  
+width="345" height="345" ></div>
+<!--l. 337--><p class="noindent" >
+
+   <h3 class="sectionHead"><span class="titlemark">5   </span> <a 
+ id="x1-100005"></a>Adaptive Sampling</h3>
+<!--l. 339--><p class="noindent" >Adaptive Sampling prevents us from making redundant ray samples when we&#8217;ve
+converged on a value for a pixel. More specifically, if we&#8217;re just sampling background,
+and we&#8217;re doing 1024 ray samples per pixel, but we&#8217;ve converged in 64 ray samples,
+then we can just return that ray sample. We do this by checking every set interval of
+samples:
+   <div class="math-display" >
+<img 
+src="main11x.png" alt="I &#x2264; &#x03BC;maxT olerance
+" class="math-display" ></div>
+<!--l. 341--><p class="indent" >   where
+   <div class="math-display" >
+<img 
+src="main12x.png" alt="        &#x03C3;
+I = 1.96&#x221A;-
+        n
+" class="math-display" ></div>
+<!--l. 342--><p class="indent" >   and <span 
+class="cmmi-10">&#x03BC; </span>and <span 
+class="cmmi-10">&#x03C3; </span>are defined to be the mean and standard deviation respectfully. To
+keep track of these statistics, we can measure the statistics of the illuminance of each
+sampled ray, and store variables <span 
+class="cmmi-10">s</span><sub><span 
+class="cmr-7">1</span></sub> and <span 
+class="cmmi-10">s</span><sub><span 
+class="cmr-7">2</span></sub> such that:
+   <div class="math-display" >
+<img 
+src="main13x.png" alt="    &#x2211;n
+s1 =   xi
+     i=1
+" class="math-display" ></div>
+
+<!--l. 344--><p class="indent" >
+   <div class="math-display" >
+<img 
+src="main14x.png" alt="    &#x2211;n  2
+s2 =   xi
+    i=1
+" class="math-display" ></div>
+<!--l. 345--><p class="indent" >   We can then get the <span 
+class="cmmi-10">&#x03BC; </span>and <span 
+class="cmmi-10">&#x03C3; </span>by doing:
+   <div class="math-display" >
+<img 
+src="main15x.png" alt="&#x03BC; = s1-
+    n
+" class="math-display" ></div>
+<!--l. 347--><p class="indent" >
+   <div class="math-display" >
+<img 
+src="main16x.png" alt="      1       s21
+&#x03C3; = n---1(s2 - n-)
+" class="math-display" ></div>
+<!--l. 348--><p class="indent" >   We then make this check every batch interval, since this check can be
+costly. Below are examples of adaptive sampling with the bunny and the
+sphere:
+<!--l. 350--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 351--><p class="noindent" ><a 
+ id="x1-10001"></a>
+<a 
+ id="x1-10002"></a>
+<!--l. 352--><p class="noindent" ><img 
+src="task5/bunny2048.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-10003r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Global Lighting</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 356--><p class="noindent" ><!--l. 357--><p class="noindent" ><img 
+src="task5/bunny2048_rate.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-10004r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">Indirect Lighting</span>
+</span></div>                          </div>
+<a 
+ id="x1-10005r14"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;14: </span><span  
+class="content">4 Bounces
+</span></div>
+
+<!--l. 362--><p class="indent" >   </div><hr class="endfigure">
+<!--l. 364--><p class="indent" >   <hr class="figure"><div class="figure" 
+>
+
+
+<div class="subfigure">
+<!--l. 365--><p class="noindent" ><a 
+ id="x1-10006"></a>
+<a 
+ id="x1-10007"></a>
+<!--l. 366--><p class="noindent" ><img 
+src="task5/spheres2048.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-10008r1"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(a) </span></span><span  
+class="content"><span 
+class="cmr-9">Global Lighting</span>
+</span></div>                          </div>                                                                   
+<div class="subfigure">
+<!--l. 370--><p class="noindent" ><!--l. 371--><p class="noindent" ><img 
+src="task5/spheres2048_rate.png" alt="PIC"  
+width="137" height="138" > <a 
+ id="x1-10009r2"></a>
+<div class="caption" ><span class="id"><span 
+class="cmr-9">(b) </span></span><span  
+class="content"><span 
+class="cmr-9">Indirect Lighting</span>
+</span></div>                          </div>
+<a 
+ id="x1-10010r15"></a>
+<div class="caption" ><span class="id">Figure&#x00A0;15: </span><span  
+class="content">Spheres with Adaptive Sampling
+</span></div>
+
+<!--l. 376--><p class="indent" >   </div><hr class="endfigure">
+    
+</body></html> 
+
+
+
